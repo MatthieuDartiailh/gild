@@ -6,24 +6,12 @@
 #
 # The full license is in the file LICENCE, distributed with this software.
 # -----------------------------------------------------------------------------
-"""Manifest used to test the PackagesPlugin
+"""All possible contributions to plugin of the app package.
 
 """
 from __future__ import (division, unicode_literals, print_function,
                         absolute_import)
 
-from enaml.workbench.api import PluginManifest
+from .app_extensions import AppStartup, AppClosing, AppClosed
 
-enamldef Manifest1(PluginManifest):
-    """Dummy manifest not declaring a priority.
-
-    """
-    id = 'exopy.test1'
-
-
-enamldef Manifest2(PluginManifest):
-    """Dummy manifest declaring a priority.
-
-    """
-    id = 'exopy.test2'
-    attr priority = 0
+__all__ = ['AppStartup', 'AppClosing', 'AppClosed']

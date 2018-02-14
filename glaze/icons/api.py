@@ -6,24 +6,25 @@
 #
 # The full license is in the file LICENCE, distributed with this software.
 # -----------------------------------------------------------------------------
-"""Manifest used to test the PackagesPlugin
+"""Api of the icon plugin.
 
 """
 from __future__ import (division, unicode_literals, print_function,
                         absolute_import)
 
-from enaml.workbench.api import PluginManifest
-
-enamldef Manifest1(PluginManifest):
-    """Dummy manifest not declaring a priority.
-
-    """
-    id = 'exopy.test1'
+from .icon_theme import IconTheme, Icon
 
 
-enamldef Manifest2(PluginManifest):
-    """Dummy manifest declaring a priority.
+def get_icon(workbench, icon_id):
+    """Utility function querying an icon.
+
+    This function is provided to be more compact than using the core plugin.
+    All widgets if the main application window is one of their parent can
+    access the workbench thanks to dynamic scoping.
 
     """
-    id = 'exopy.test2'
-    attr priority = 0
+    plugin = workbench.get_plugin('exopy.app.icons')
+    return plugin.get_icon(icon_id)
+
+
+__all__ = ['IconTheme', 'Icon', 'get_icon']
