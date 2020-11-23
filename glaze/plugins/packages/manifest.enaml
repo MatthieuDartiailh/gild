@@ -1,39 +1,38 @@
-# -*- coding: utf-8 -*-
-# -----------------------------------------------------------------------------
-# Copyright 2015-2018 by Exopy Authors, see AUTHORS for more details.
+# --------------------------------------------------------------------------------------
+# Copyright 2020 by Glaze Authors, see git history for more details.
 #
 # Distributed under the terms of the BSD license.
 #
 # The full license is in the file LICENCE, distributed with this software.
-# -----------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
 """Manifest for the PackagesPlugin which collect and handle extension packages.
 
 Extension packages are packages which declare a setuptools entry point :
-`exopy_package_extension` pointing towards a callable returning a lits of plugin
-manifest. At application start up, the entry point is inspected and all
-collected manifest are registered. They are unregistered during application
-closing (after calling the ClosedApp handlers). Each manifest can declare a
-priority between 0 and 100 which will be used when unregistering (lower values
-unregistered first).
+pointing towards a callable returning a lits of plugin manifest.
+
+At application start up, the entry point is inspected and all collected manifest
+are registered. They are unregistered during application closing (after calling
+the ClosedApp handlers). Each manifest can declare a priority between 0 and 100
+which will be used when unregistering (lower values unregistered first).
 
 """
 import logging
 from collections import Mapping
 from pprint import pformat
+from traceback import format_exc
 
 from enaml.workbench.api import PluginManifest, Extension
 from enaml.widgets.api import MultilineField
 
-from ..app_extensions import AppStartup
-from ..errors.errors import ErrorHandler
+from ..lifecycle import AppStartup
+from ..errors import ErrorHandler
 from ..errors.widgets import BasicErrorsDisplay
-from ...utils.traceback import format_exc
 
-PLUGIN_ID = 'exopy.app.packages'
+PLUGIN_ID = 'glaze.packages'
 logger = logging.getLogger(__name__)
 
 # =============================================================================
-# --- Factories ---------------------------------------------------------------
+# --- Factories ------------------------------------------------------------------------
 # =============================================================================
 
 def packages_plugin_factory():
@@ -44,15 +43,16 @@ def packages_plugin_factory():
     return PackagesPlugin()
 
 
-# =============================================================================
-# --- Descriptions ------------------------------------------------------------
-# =============================================================================
+# ======================================================================================
+# --- Descriptions ---------------------------------------------------------------------
+# ======================================================================================
 
 PACKAGE_ERROR_DESCRIPTION =\
 """Specific handler for package loading errors.
 
 The handler expects the 'id' of the package for which loading failed and a
 'message' explaining what happened.
+
 """
 
 
@@ -64,9 +64,9 @@ and a 'message' key.
 
 """
 
-# =============================================================================
-# --- Manifest ----------------------------------------------------------------
-# =============================================================================
+# ======================================================================================
+# --- Manifest -------------------------------------------------------------------------
+# ======================================================================================
 
 enamldef PackagesManifest(PluginManifest):
     """Manifest of the Packages plugin.
@@ -75,15 +75,18 @@ enamldef PackagesManifest(PluginManifest):
     id = PLUGIN_ID
     factory = packages_plugin_factory
 
-    # =========================================================================
-    # --- Extensions ----------------------------------------------------------
-    # =========================================================================
+    #: Setuptools extension point from which to load extension package contributions
+    extension_point = ""
+
+    # ==================================================================================
+    # --- Extensions -------------------------------------------------------------------
+    # ==================================================================================
 
     Extension:
         id = 'startup'
-        point = 'exopy.app.startup'
+        point = 'glaze.startup'
         AppStartup:
-            id = 'exopy.app.packages'
+            id = 'glaze.packages'
             priority = 5
             run => (workbench, cmd_args):
                 plugin = workbench.get_plugin(PLUGIN_ID)
@@ -91,7 +94,7 @@ enamldef PackagesManifest(PluginManifest):
 
     Extension:
         id = 'error'
-        point = 'exopy.app.errors.handler'
+        point = 'glaze.errors.handler'
         ErrorHandler:
             attr errors = {}
             id = 'package'
@@ -148,4 +151,3 @@ enamldef PackagesManifest(PluginManifest):
             func _format(infos):
                 return ('Failed to register manifest {}'.format(infos['id']) +
                         infos['message'])
-
