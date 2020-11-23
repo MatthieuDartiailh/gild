@@ -1,10 +1,10 @@
-# -----------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
 # Copyright 2020 by Glaze Authors, see git history for more details.
 #
 # Distributed under the terms of the BSD license.
 #
 # The full license is in the file LICENCE, distributed with this software.
-# -----------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
 """This module defines some tools to make easier the use of the logging module.
 
 It provide tools to seamlessly convert stream information into log record so

@@ -38,7 +38,7 @@ enamldef IconManagerManifest(PluginManifest):
 
     """
     #: Id of the plugin.
-    id = 'glaze.icons'
+    id = "glaze.icons"
     factory = icons_plugin_factory
 
     # ==================================================================================
@@ -46,13 +46,13 @@ enamldef IconManagerManifest(PluginManifest):
     # ==================================================================================
 
     ExtensionPoint:
-        id = 'icon_theme'
-        description = 'Point to which plugin can contribute icon themes.'
+        id = "icon_theme"
+        description = "Point to which plugin can contribute icon themes."
 
     ExtensionPoint:
-        id = 'icon_theme_extension'
-        description = ('Point to which plugin can contribute icon theme '
-                       'extensions.')
+        id = "icon_theme_extension"
+        description = ("Point to which plugin can contribute icon theme "
+                       "extensions.")
 
     # ==================================================================================
     # --- Extensions -------------------------------------------------------------------
@@ -60,36 +60,36 @@ enamldef IconManagerManifest(PluginManifest):
 
     Extension:
 
-        id = 'preferences'
-        point = 'glaze.preferences.plugin'
+        id = "preferences"
+        point = "glaze.preferences.plugin"
         Preferences:
             pass
 
     Extension:
 
-        id = 'themes'
-        point = 'glaze.icons.icon_theme'
-        description = 'Add the default icon themes based on qtawesome.'
+        id = "themes"
+        point = "glaze.icons.icon_theme"
+        description = "Add the default icon themes based on qtawesome."
 
         IconTheme:
-            id = 'glaze.FontAwesome'
+            id = "glaze.FontAwesome"
 
             get_icon => (manager, icon_id):
                 from qtawesome import icon as qicon
                 try:
-                    icon = enaml.icon.Icon(_tkdata=qicon('fa.' + icon_id))
+                    icon = enaml.icon.Icon(_tkdata=qicon("fa." + icon_id))
                 except Exception:
                     icon = None
 
                 return icon
 
         IconTheme:
-            id = 'glaze.ElusiveIcon'
+            id = "glaze.ElusiveIcon"
 
             get_icon => (manager, icon_id):
                 from qtawesome import icon as qicon
                 try:
-                    icon = enaml.icon.Icon(_tkdata=qicon('ei.' + icon_id))
+                    icon = enaml.icon.Icon(_tkdata=qicon("ei." + icon_id))
                 except Exception:
                     icon = None
 

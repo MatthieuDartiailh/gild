@@ -25,7 +25,7 @@ from .errors import ErrorHandler
 from .widgets import BasicErrorsDisplay, HierarchicalErrorsDisplay
 
 
-PLUGIN_ID ='glaze.errors'
+PLUGIN_ID ="glaze.errors"
 logger = logging.getLogger(__name__)
 
 
@@ -121,7 +121,7 @@ INSTALL_EXCEPTHOOK_DESCRIPTION =\
 ERROR_DESCRIPTION =\
 """Generic error handler, log and warn user (popup window).
 
-The handler expect to find a 'message' key in the passed infos.
+The handler expect to find a "message" key in the passed infos.
 
 """
 
@@ -129,8 +129,8 @@ The handler expect to find a 'message' key in the passed infos.
 EXTENSION_ERR_DESCRIPTION =\
 """Specific handler for extension loading errors.
 
-The handler expects the 'point' to which the extension was contributing and
-an 'errors' dictionary describing the errors that occured.
+The handler expects the "point" to which the extension was contributing and
+an "errors" dictionary describing the errors that occured.
 
 """
 
@@ -149,69 +149,69 @@ enamldef ErrorsManifest(PluginManifest):
     should_add_menu: bool = True
 
     #: Path for the menu action
-    menu_path: str = 'tools/errors'
+    menu_path: str = "tools/errors"
 
     # ==================================================================================
     # --- Extension points -------------------------------------------------------------
     # ==================================================================================
 
     ExtensionPoint:
-        id = 'handler'
+        id = "handler"
         description = HANDLER_EXT_DESC
 
     # ==================================================================================
     # --- Extensions -------------------------------------------------------------------
     # ==================================================================================
     Extension:
-        id = 'commands'
-        point = 'enaml.workbench.core.commands'
+        id = "commands"
+        point = "enaml.workbench.core.commands"
         Command:
-            id = 'glaze.errors.signal'
+            id = "glaze.errors.signal"
             description = SIGNAL_HANDLER_DESCRIPTION
-            handler = make_handler(PLUGIN_ID, 'signal')
+            handler = make_handler(PLUGIN_ID, "signal")
         Command:
-            id = 'glaze.errors.report'
+            id = "glaze.errors.report"
             description = REPORT_HANDLER_DESCRIPTION
-            handler = make_handler(PLUGIN_ID, 'report')
+            handler = make_handler(PLUGIN_ID, "report")
         Command:
-            id = 'glaze.errors.enter_error_gathering'
+            id = "glaze.errors.enter_error_gathering"
             description = ENTER_ERROR_GATHERING_DESCRIPTION
-            handler = make_handler(PLUGIN_ID, 'enter_error_gathering')
+            handler = make_handler(PLUGIN_ID, "enter_error_gathering")
         Command:
-            id = 'glaze.errors.exit_error_gathering'
+            id = "glaze.errors.exit_error_gathering"
             description = EXIT_ERROR_GATHERING_DESCRIPTION
-            handler = make_handler(PLUGIN_ID, 'exit_error_gathering')
+            handler = make_handler(PLUGIN_ID, "exit_error_gathering")
         Command:
-            id = 'glaze.errors.install_excepthook'
+            id = "glaze.errors.install_excepthook"
             description = INSTALL_EXCEPTHOOK_DESCRIPTION
-            handler = make_handler(PLUGIN_ID, 'install_excepthook')
+            handler = make_handler(PLUGIN_ID, "install_excepthook")
 
     Extension:
-        id = 'menus'
-        point = 'enaml.workbench.ui.actions'
+        id = "menus"
+        point = "enaml.workbench.ui.actions"
         ActionItem:
             path = menu_path
-            label = 'Show errors report'
-            command = 'glaze.errors.report'
+            label = "Show errors report"
+            command = "glaze.errors.report"
 
     Extension:
-        id = 'state'
-        point = 'glaze.states.state'
+        id = "state"
+        point = "glaze.states.state"
         State:
-            id = 'glaze.errors'
-            description = 'Give access to the registered handlers ids.'
-            sync_members = ['errors']
+            id = "glaze.errors"
+            description = "Give access to the registered handlers ids."
+            sync_members = ["errors"]
 
     Extension:
-        id = 'err_handlers'
-        point = 'glaze.errors.handler'
+        id = "err_handlers"
+        point = "glaze.errors.handler"
         ErrorHandler:
-            id = 'error'
+            id = "error"
             description = ERROR_DESCRIPTION
             handle => (workbench, infos):
                 if not isinstance(infos, Mapping):
-                    msg = '\n\n'.join([self._format(i) for i in infos])
-                    msg = 'Errors occured :\n' + msg
+                    msg = "\n\n".join([self._format(i) for i in infos])
+                    msg = "Errors occured :\n" + msg
                 else:
                     msg = self._format(infos)
 
@@ -219,13 +219,13 @@ enamldef ErrorsManifest(PluginManifest):
                 return MultilineField(read_only=True, text=msg)
 
             func _format(infos):
-                def_msg =  'No message found, infos are {}'
-                return infos.get('message', def_msg.format(pformat(infos)))
+                def_msg =  "No message found, infos are {}"
+                return infos.get("message", def_msg.format(pformat(infos)))
 
         # Standard error handlers for plugin tools.
         ErrorHandler:
             attr errors = defaultdict(dict)
-            id = 'extensions'
+            id = "extensions"
             description = EXTENSION_ERR_DESCRIPTION
             handle => (workbench, infos):
                 if not isinstance(infos, Mapping):
@@ -235,8 +235,8 @@ enamldef ErrorsManifest(PluginManifest):
                 else:
                     err = self._format(infos)
 
-                logger.debug('Errors occured when loading extensions for '
-                             'the following extension points:\n%s',
+                logger.debug("Errors occured when loading extensions for "
+                             "the following extension points:\n%s",
                              pformat(err))
 
                 recursive_update(errors, err)
@@ -246,15 +246,15 @@ enamldef ErrorsManifest(PluginManifest):
                                               kind=kind)
                 else:
                     return HierarchicalErrorsDisplay(errors=err,
-                                                     kind='Extensions')
+                                                     kind="Extensions")
 
             report => (workbench):
                 if errors:
                     return HierarchicalErrorsDisplay(errors=errors,
-                                                    kind='Extensions')
+                                                    kind="Extensions")
 
-                msg = 'No extensions registering error occured.'
+                msg = "No extensions registering error occured."
                 return MultilineField(text=msg)
 
             func _format(infos):
-                return {infos['point']: infos['errors']}
+                return {infos["point"]: infos["errors"]}
