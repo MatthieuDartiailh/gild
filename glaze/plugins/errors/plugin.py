@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright 2015-2018 by Exopy Authors, see AUTHORS for more details.
+# Copyright 2020 by Glaze Authors, see git history for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -14,22 +13,25 @@ from collections import defaultdict
 from inspect import cleandoc
 from pprint import pformat
 from textwrap import fill
+from typing import Any, Dict, Optional
 
 import enaml
-from atom.api import List, Typed, Int
-from enaml.workbench.api import Plugin
+from atom.api import Int, List, Typed
 from enaml.application import deferred_call
+from enaml.widgets.widget import Widget
+from enaml.workbench.api import Plugin
 
-from .errors import ErrorHandler
-from ...utils.traceback import format_exc, format_tb
 from ...utils.plugin_tools import ExtensionsCollector, make_extension_validator
+from ...utils.traceback import format_exc, format_tb
+from .errors import ErrorHandler
 
 with enaml.imports():
     from enaml.stdlib.message_box import warning
+
     from .widgets import ErrorsDialog, UnknownErrorWidget
 
 
-ERR_HANDLER_POINT = 'exopy.app.errors.handler'
+ERR_HANDLER_POINT = "glaze.errors.handler"
 
 logger = logging.getLogger(__name__)
 
@@ -41,36 +43,35 @@ class ErrorsPlugin(Plugin):
     type.
 
     """
+
     #: Errors for which a custom handler is registered.
     errors = List()
 
-    def start(self):
-        """Collect extensions.
-
-        """
-        checker = make_extension_validator(ErrorHandler, ('handle',))
-        self._errors_handlers = ExtensionsCollector(workbench=self.workbench,
-                                                    point=ERR_HANDLER_POINT,
-                                                    ext_class=ErrorHandler,
-                                                    validate_ext=checker)
+    def start(self) -> None:
+        """Collect extensions."""
+        checker = make_extension_validator(ErrorHandler, ("handle",))
+        self._errors_handlers = ExtensionsCollector(
+            workbench=self.workbench,
+            point=ERR_HANDLER_POINT,
+            ext_class=ErrorHandler,
+            validate_ext=checker,
+        )
         self._errors_handlers.start()
-        self._update_errors(None)
-        self._errors_handlers.observe('contributions', self._update_errors)
+        self._update_errors({})
+        self._errors_handlers.observe("contributions", self._update_errors)
 
-    def stop(self):
-        """Stop the extension collector and clear the list of handlers.
-
-        """
-        self._errors_handlers.unobserve('contributions', self._update_errors)
+    def stop(self) -> None:
+        """Stop the extension collector and clear the list of handlers."""
+        self._errors_handlers.unobserve("contributions", self._update_errors)
         self._errors_handlers.stop()
         self.errors = []
 
-    def signal(self, kind, **kwargs):
+    def signal(self, kind: Optional[str], **kwargs) -> None:
         """Signal an error occured in the system.
 
         Parameters
         ----------
-        kind : unicode or None
+        kind : str or None
             Kind of error which occurred. If a specific handler is found, it is
             used, otherwise the generic handling method is used.
 
@@ -89,12 +90,12 @@ class ErrorsPlugin(Plugin):
             dial = ErrorsDialog(errors={kind: widget})
             deferred_call(dial.exec_)
 
-    def report(self, kind=None):
+    def report(self, kind: Optional[str] = None) -> None:
         """Show a widget summarizing all the errors.
 
         Parameters
         ----------
-        kind : unicode, optional
+        kind : str or None, optional
             If specified only the error related to the specified kind will
             be reported.
 
@@ -103,10 +104,11 @@ class ErrorsPlugin(Plugin):
         errors = {}
         if kind:
             if kind not in handlers:
-                msg = '''{} is not a registered error kind (it has no
-                    associated handler)'''.format(kind)
-                self.signal('error',
-                            message=cleandoc(msg).replace('\n', ' '))
+                msg = """{} is not a registered error kind (it has no
+                    associated handler)""".format(
+                    kind
+                )
+                self.signal("error", message=cleandoc(msg).replace("\n", " "))
                 return
 
             handlers = {kind: handlers[kind]}
@@ -119,13 +121,11 @@ class ErrorsPlugin(Plugin):
         dial = ErrorsDialog(errors=errors)
         dial.exec_()
 
-    def enter_error_gathering(self):
-        """In gathering mode, error handling is differed till exiting the mode.
-
-        """
+    def enter_error_gathering(self) -> None:
+        """In gathering mode, error handling is differed till exiting the mode."""
         self._gathering_counter += 1
 
-    def exit_error_gathering(self):
+    def exit_error_gathering(self) -> None:
         """Upon leaving gathering mode, errors are handled.
 
         If error handling should lead to a window display, all widgets are
@@ -157,29 +157,32 @@ class ErrorsPlugin(Plugin):
                 dial = ErrorsDialog(errors=errors)
                 deferred_call(dial.exec_)
 
-    def install_excepthook(self):
+    def install_excepthook(self) -> None:
         """Setup a global sys.excepthook for a nicer user experience.
 
         The error message suggest to the user to restart the app. In the future
         adding an automatic bug report system here would make sense.
 
         """
+
         def exception_handler(cls, value, traceback):
             """Log the error and signal to the user that it should restart the
             app.
 
             """
-            msg = 'An uncaught exception occured :\n%s : %s\nTraceback:\n%s'
-            logger.error(msg % (cls.__name__, value,
-                         ''.join(format_tb(traceback))))
+            msg = "An uncaught exception occured :\n%s : %s\nTraceback:\n%s"
+            logger.error(msg % (cls.__name__, value, "".join(format_tb(traceback))))
 
-            ui = self.workbench.get_plugin('enaml.workbench.ui')
-            msg = ('An uncaught exception occured. This should not happen '
-                   'and can have a number of side effects. It is hence '
-                   'advised to save your work and restart the application.')
-            warning(ui.window, 'Consider restart', fill(msg))
+            ui = self.workbench.get_plugin("enaml.workbench.ui")
+            msg = (
+                "An uncaught exception occured. This should not happen "
+                "and can have a number of side effects. It is hence "
+                "advised to save your work and restart the application."
+            )
+            warning(ui.window, "Consider restart", fill(msg))
 
         import sys
+
         sys.excepthook = exception_handler
 
     # =========================================================================
@@ -197,51 +200,54 @@ class ErrorsPlugin(Plugin):
     #: while the gathering mode was active.
     _delayed = Typed(defaultdict, (list,))
 
-    def _update_errors(self, change):
+    def _update_errors(self, change: Dict[str, Any]) -> None:
         """Update the list of supported errors when the registered handlers
         change
 
         """
         self.errors = list(self._errors_handlers.contributions)
 
-    def _handle(self, kind, infos):
-        """Dispatch error report to appropriate handler.
-
-        """
+    def _handle(self, kind: Optional[str], infos: Any) -> Widget:
+        """Dispatch error report to appropriate handler."""
         if kind in self._errors_handlers.contributions:
             handler = self._errors_handlers.contributions[kind]
             try:
                 return handler.handle(self.workbench, infos)
             except Exception:
                 try:
-                    msg = ('Failed to handle %s error, infos were:\n' % kind +
-                           pformat(infos) + '\nError was :\n' + format_exc())
+                    msg = (
+                        "Failed to handle %s error, infos were:\n" % kind
+                        + pformat(infos)
+                        + "\nError was :\n"
+                        + format_exc()
+                    )
                 except Exception:
-                    msg = ('Failed to handle %s error, and to ' % kind +
-                           'format infos:\n' + format_exc())
-                core = self.workbench.get_plugin('enaml.workbench.core')
-                core.invoke_command('exopy.app.errors.signal',
-                                    dict(kind='error', message=msg))
+                    msg = (
+                        "Failed to handle %s error, and to " % kind
+                        + "format infos:\n"
+                        + format_exc()
+                    )
+                core = self.workbench.get_plugin("enaml.workbench.core")
+                core.invoke_command(
+                    "glaze.errors.signal", dict(kind="error", message=msg)
+                )
 
         else:
             return self._handle_unknwon(kind, infos)
 
-    def _handle_unknwon(self, kind, infos):
-        """Generic handler for unregistered kind of errors.
-
-        """
+    def _handle_unknwon(self, kind: Optional[str], infos: Any) -> UnknownErrorWidget:
+        """Generic handler for unregistered kind of errors."""
         try:
             # Delayed handling of errors
             if not isinstance(infos, dict):
-                msg = '\n\n'.join((pformat(i) for i in infos))
+                msg = "\n\n".join((pformat(i) for i in infos))
 
             else:
                 msg = pformat(infos)
 
         except Exception:
-            msg = 'Failed to format the errors infos.\n' + format_exc()
+            msg = "Failed to format the errors infos.\n" + format_exc()
 
-        logger.debug('No handler found for "%s" kind of error:\n %s',
-                     kind, msg)
+        logger.debug('No handler found for "%s" kind of error:\n %s', kind, msg)
 
         return UnknownErrorWidget(kind=kind, msg=msg)

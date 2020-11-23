@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright 2015-2018 by Exopy Authors, see AUTHORS for more details.
+# Copyright 2020 by Glaze Authors, see git history for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -12,8 +11,9 @@
 from enaml.core.api import Looper, Include, Conditional
 from enaml.layout.api import vbox, hbox, align
 from enaml.stdlib.mapped_view import MappedView
-from enaml.widgets.api import (Container, MultilineField, Notebook, Dialog,
-                               Page, Label)
+from enaml.widgets.api import (
+    Container, Dialog, Label, MultilineField, Notebook, Page
+)
 
 from ...utils.widgets.qt_list_str_widget import QtListStrWidget
 from ...utils.widgets.dict_tree_view import DictTreeView, Leaf, Node
@@ -63,15 +63,14 @@ enamldef ErrorsDialog(Dialog):
 
 
 enamldef UnknownErrorWidget(Container):
-    """Widget used to display messages for errors for which no specific handler
-    was found.
+    """Display messages for errors for which no specific handler  was found.
 
     """
     #: Kind of the errror for which no handler was found.
-    attr kind
+    attr kind: str
 
     #: Message presenting all the infos in a nice formatted version.
-    attr msg
+    attr msg: str
 
     Label:
         text =\

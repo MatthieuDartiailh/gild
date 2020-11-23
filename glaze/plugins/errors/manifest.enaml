@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
-# -----------------------------------------------------------------------------
-# Copyright 2015-2018 by Exopy Authors, see AUTHORS for more details.
+# --------------------------------------------------------------------------------------
+# Copyright 2020 by Glaze Authors, see git history for more details.
 #
 # Distributed under the terms of the BSD license.
 #
 # The full license is in the file LICENCE, distributed with this software.
-# -----------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
 """Plugin centralizing the application error handling.
 
 """
@@ -13,24 +12,46 @@ import logging
 from pprint import pformat
 from collections import defaultdict, Mapping
 
+from enaml.core.api import Conditional
 from enaml.workbench.api import PluginManifest, ExtensionPoint, Extension
 from enaml.workbench.core.api import Command
 from enaml.workbench.ui.api import ActionItem
 from enaml.widgets.api import MultilineField
 
+from glaze.plugins.states.state import State
+from glaze.utils.mapping_utils import recursive_update
+from glaze.utils.plugin_tools import make_handler
 from .errors import ErrorHandler
-from ..states.state import State
 from .widgets import BasicErrorsDisplay, HierarchicalErrorsDisplay
-from ...utils.traceback import format_exc
-from ...utils.mapping_utils import recursive_update
-from ...utils.plugin_tools import make_handler
 
-PLUGIN_ID ='exopy.app.errors'
+
+PLUGIN_ID ='glaze.errors'
 logger = logging.getLogger(__name__)
 
-# =============================================================================
-# --- Factories ---------------------------------------------------------------
-# =============================================================================
+
+def recursive_update(to_update, data):
+    """Update a dictionary and all the mapping found as values.
+
+    Parameters
+    ----------
+    to_update : Mapping
+        Mapping whose content should be updated.
+
+    data : Mapping
+        Mapping to use from which to pull new values.
+
+    """
+    for k, v in data.items():
+        if isinstance(v, Mapping):
+            if k not in to_update:
+                to_update[k] = {}
+            recursive_update(to_update[k], v)
+        else:
+            to_update[k] = v
+
+# ======================================================================================
+# --- Factories ------------------------------------------------------------------------
+# ======================================================================================
 
 def errors_plugin_factory():
     """ Factory function for the LogPlugin.
@@ -40,9 +61,9 @@ def errors_plugin_factory():
     return ErrorsPlugin()
 
 
-# =============================================================================
-# --- Descriptions ------------------------------------------------------------
-# =============================================================================
+# ======================================================================================
+# --- Descriptions ---------------------------------------------------------------------
+# ======================================================================================
 
 HANDLER_EXT_DESCRIPTION = \
 """Plugins can contribute ErrorHandler to this point to add a new way of
@@ -56,7 +77,7 @@ SIGNAL_HANDLER_DESCRIPTION = \
 
 Parameters
 ----------
-kind : unicode
+kind : str
     The kind of the error which occured. It should match a registered
     ErrorHandler id.
 
@@ -113,9 +134,9 @@ an 'errors' dictionary describing the errors that occured.
 
 """
 
-# =============================================================================
-# --- Manifest ----------------------------------------------------------------
-# =============================================================================
+# ======================================================================================
+# --- Manifest -------------------------------------------------------------------------
+# ======================================================================================
 
 enamldef ErrorsManifest(PluginManifest):
     """Plugin centralizing the handling of errors.
@@ -124,38 +145,44 @@ enamldef ErrorsManifest(PluginManifest):
     id = PLUGIN_ID
     factory = errors_plugin_factory
 
-    # =========================================================================
-    # --- Extension points ----------------------------------------------------
-    # =========================================================================
+    #: Should a menu action be added to show error reports
+    should_add_menu: bool = True
+
+    #: Path for the menu action
+    menu_path: str = 'tools/errors'
+
+    # ==================================================================================
+    # --- Extension points -------------------------------------------------------------
+    # ==================================================================================
 
     ExtensionPoint:
         id = 'handler'
         description = HANDLER_EXT_DESC
 
-    # =========================================================================
-    # --- Extensions ----------------------------------------------------------
-    # =========================================================================
+    # ==================================================================================
+    # --- Extensions -------------------------------------------------------------------
+    # ==================================================================================
     Extension:
         id = 'commands'
         point = 'enaml.workbench.core.commands'
         Command:
-            id = 'exopy.app.errors.signal'
+            id = 'glaze.errors.signal'
             description = SIGNAL_HANDLER_DESCRIPTION
             handler = make_handler(PLUGIN_ID, 'signal')
         Command:
-            id = 'exopy.app.errors.report'
+            id = 'glaze.errors.report'
             description = REPORT_HANDLER_DESCRIPTION
             handler = make_handler(PLUGIN_ID, 'report')
         Command:
-            id = 'exopy.app.errors.enter_error_gathering'
+            id = 'glaze.errors.enter_error_gathering'
             description = ENTER_ERROR_GATHERING_DESCRIPTION
             handler = make_handler(PLUGIN_ID, 'enter_error_gathering')
         Command:
-            id = 'exopy.app.errors.exit_error_gathering'
+            id = 'glaze.errors.exit_error_gathering'
             description = EXIT_ERROR_GATHERING_DESCRIPTION
             handler = make_handler(PLUGIN_ID, 'exit_error_gathering')
         Command:
-            id = 'exopy.app.errors.install_excepthook'
+            id = 'glaze.errors.install_excepthook'
             description = INSTALL_EXCEPTHOOK_DESCRIPTION
             handler = make_handler(PLUGIN_ID, 'install_excepthook')
 
@@ -163,21 +190,21 @@ enamldef ErrorsManifest(PluginManifest):
         id = 'menus'
         point = 'enaml.workbench.ui.actions'
         ActionItem:
-            path = 'tools/errors'
+            path = menu_path
             label = 'Show errors report'
-            command = 'exopy.app.errors.report'
+            command = 'glaze.errors.report'
 
     Extension:
         id = 'state'
-        point = 'exopy.app.states.state'
+        point = 'glaze.states.state'
         State:
-            id = 'exopy.app.errors'
+            id = 'glaze.errors'
             description = 'Give access to the registered handlers ids.'
             sync_members = ['errors']
 
     Extension:
         id = 'err_handlers'
-        point = 'exopy.app.errors.handler'
+        point = 'glaze.errors.handler'
         ErrorHandler:
             id = 'error'
             description = ERROR_DESCRIPTION
