@@ -1,15 +1,14 @@
-# -*- coding: utf-8 -*-
-# -----------------------------------------------------------------------------
-# Copyright 2015-2018 by Exopy Authors, see AUTHORS for more details.
+# --------------------------------------------------------------------------------------
+# Copyright 2020 by Glaze Authors, see git history for more details.
 #
 # Distributed under the terms of the BSD license.
 #
 # The full license is in the file LICENCE, distributed with this software.
-# -----------------------------------------------------------------------------
-"""Api of the icon plugin.
+# --------------------------------------------------------------------------------------
+"""Application icons management plugins.
 
 """
-from .icon_theme import IconTheme, Icon
+from .icon_theme import Icon, IconTheme
 
 
 def get_icon(workbench, icon_id):
@@ -20,8 +19,8 @@ def get_icon(workbench, icon_id):
     access the workbench thanks to dynamic scoping.
 
     """
-    plugin = workbench.get_plugin('exopy.app.icons')
+    plugin = workbench.get_plugin("glaze.icons")
     return plugin.get_icon(icon_id)
 
 
-__all__ = ['IconTheme', 'Icon', 'get_icon']
+__all__ = ["IconTheme", "Icon", "get_icon"]

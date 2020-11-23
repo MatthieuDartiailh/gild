@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
-# -----------------------------------------------------------------------------
-# Copyright 2015-2018 by Exopy Authors, see AUTHORS for more details.
+# --------------------------------------------------------------------------------------
+# Copyright 2020 by Glaze Authors, see git history for more details.
 #
 # Distributed under the terms of the BSD license.
 #
 # The full license is in the file LICENCE, distributed with this software.
-# -----------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
 """Manifest of the icon manager plugin.
 
 """
@@ -18,9 +17,9 @@ from ..preferences.api import Preferences
 from .icon_theme import IconTheme
 
 
-# =============================================================================
-# --- Factories ---------------------------------------------------------------
-# =============================================================================
+# ======================================================================================
+# --- Factories ------------------------------------------------------------------------
+# ======================================================================================
 
 def icons_plugin_factory():
     """ Factory function for the LogPlugin.
@@ -30,21 +29,21 @@ def icons_plugin_factory():
     return IconManagerPlugin()
 
 
-# =============================================================================
-# --- Manifest ----------------------------------------------------------------
-# =============================================================================
+# ======================================================================================
+# --- Manifest -------------------------------------------------------------------------
+# ======================================================================================
 
 enamldef IconManagerManifest(PluginManifest):
     """Manifest of the icon manager plugin providing icon to the GUI.
 
     """
     #: Id of the plugin.
-    id = 'exopy.app.icons'
+    id = 'glaze.icons'
     factory = icons_plugin_factory
 
-    # =========================================================================
-    # --- Extension points ----------------------------------------------------
-    # =========================================================================
+    # ==================================================================================
+    # --- Extension points -------------------------------------------------------------
+    # ==================================================================================
 
     ExtensionPoint:
         id = 'icon_theme'
@@ -55,25 +54,25 @@ enamldef IconManagerManifest(PluginManifest):
         description = ('Point to which plugin can contribute icon theme '
                        'extensions.')
 
-    # =========================================================================
-    # --- Extensions ----------------------------------------------------------
-    # =========================================================================
+    # ==================================================================================
+    # --- Extensions -------------------------------------------------------------------
+    # ==================================================================================
 
     Extension:
 
         id = 'preferences'
-        point = 'exopy.app.preferences.plugin'
+        point = 'glaze.preferences.plugin'
         Preferences:
             pass
 
     Extension:
 
         id = 'themes'
-        point = 'exopy.app.icons.icon_theme'
+        point = 'glaze.icons.icon_theme'
         description = 'Add the default icon themes based on qtawesome.'
 
         IconTheme:
-            id = 'exopy.FontAwesome'
+            id = 'glaze.FontAwesome'
 
             get_icon => (manager, icon_id):
                 from qtawesome import icon as qicon
@@ -85,7 +84,7 @@ enamldef IconManagerManifest(PluginManifest):
                 return icon
 
         IconTheme:
-            id = 'exopy.ElusiveIcon'
+            id = 'glaze.ElusiveIcon'
 
             get_icon => (manager, icon_id):
                 from qtawesome import icon as qicon
