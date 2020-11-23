@@ -11,3 +11,6 @@ If using a custom Workbench window subclass you need to inherit from the
 AppWindow to preserve teh life cycle behaviors provided by this plugin.
 
 """
+from .lifecycle_extensions import AppClosed, AppClosing, AppStartup
+
+__all__ = ["AppClosed", "AppClosing", "AppStartup"]
