@@ -1,23 +1,23 @@
-# -*- coding: utf-8 -*-
-# -----------------------------------------------------------------------------
-# Copyright 2015-2018 by Exopy Authors, see AUTHORS for more details.
+# --------------------------------------------------------------------------------------
+# Copyright 2020 by Glaze Authors, see git history for more details.
 #
 # Distributed under the terms of the BSD license.
 #
 # The full license is in the file LICENCE, distributed with this software.
-# -----------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
 """Log plugin definition.
 
 """
-import os
 import logging
-
-from atom.api import Str, Dict, List, Tuple, Typed
-from enaml.workbench.api import Plugin
-
-from .tools import (LogModel, GuiHandler, DayRotatingTimeHandler)
+import os
+from typing import Callable
 
 import enaml
+from atom.api import Dict, List, Str, Tuple, Typed
+from enaml.workbench.api import Plugin
+
+from .tools import DayRotatingTimeHandler
+
 with enaml.imports():
     from .widgets import LogDialog
 
@@ -26,36 +26,29 @@ MODULE_PATH = os.path.dirname(__file__)
 
 
 class LogPlugin(Plugin):
-    """Plugin managing the application logging.
+    """Plugin managing the application logging."""
 
-    """
     #: List of installed handlers.
     handler_ids = List(Str())
 
     #: List of installed filters.
     filter_ids = List(Str())
 
-    #: Model which can be used to display the log in the GUI. It is associated
-    #: to a handler attached to the root logger.
-    gui_model = Typed(LogModel)
-
     # Current log
     rotating_log = Typed(DayRotatingTimeHandler)
 
-    def display_current_log(self):
-        """Display the current instance of the rotating log file.
-
-        """
+    def display_current_log(self) -> None:
+        """Display the current instance of the rotating log file."""
         with open(self.rotating_log.path) as f:
             log = f.read()
         LogDialog(log=log).exec_()
 
-    def add_handler(self, id, handler=None, logger='', mode=None):
+    def add_handler(self, id: str, handler: logging.Handler, logger="") -> None:
         """Add a handler to the specified logger.
 
         Parameters
         ----------
-        id : unicode
+        id : str
             Id of the new handler. This id should be unique.
 
         handler : logging.Handler, optional
@@ -65,31 +58,7 @@ class LogPlugin(Plugin):
             Name of the logger to which the handler should be added. By default
             the handler is added to the root logger.
 
-        mode : {'ui', }, optional
-            Conveninence to add a simple logger. If this argument is specified,
-            handler will be ignored and the command will return useful
-            references (the model to which can be connected a ui for the 'ui'
-            mode).
-
-        Returns
-        -------
-        refs : list
-            List of useful reference, empty if no mode is selected.
-
         """
-        refs = []
-        if not handler:
-            if mode and mode == 'ui':
-                model = LogModel()
-                handler = GuiHandler(model=model)
-                refs.append(model)
-            else:
-                logger = logging.getLogger(__name__)
-                msg = ('Missing handler or recognised mode when adding '
-                       'log handler under id %s to logger %s')
-                logger.info(msg, id, logger)
-                return []
-
         name = logger
         logger = logging.getLogger(name)
 
@@ -98,15 +67,12 @@ class LogPlugin(Plugin):
         self._handlers[id] = (handler, name)
         self.handler_ids = list(self._handlers.keys())
 
-        if refs:
-            return refs
-
-    def remove_handler(self, id):
+    def remove_handler(self, id: str) -> None:
         """Remove the specified handler.
 
         Parameters
         ----------
-        id : unicode
+        id : str
             Id of the handler to remove.
 
         """
@@ -123,25 +89,26 @@ class LogPlugin(Plugin):
             self.filter_ids = list(self._filters.keys())
             self.handler_ids = list(self._handlers.keys())
 
-    def add_filter(self, id, filter, handler_id):
+    def add_filter(
+        self, id: str, filter: Callable[[logging.LogRecord], bool], handler_id: str
+    ) -> None:
         """Add a filter to the specified handler.
 
         Parameters
         ----------
-        id : unicode
+        id : str
             Id of the filter to add.
 
-        filter : object
-            Filter to add to the specified handler (object implemeting a filter
-            method).
+        filter : Callable[[logging.LogRecord]
+            Callable determining if a log record should be processed.
 
-        handler_id : unicode
+        handler_id : str
             Id of the handler to which this filter should be added
 
         """
-        if not hasattr(filter, 'filter'):
+        if not hasattr(filter, "filter"):
             logger = logging.getLogger(__name__)
-            logger.warning('Filter does not implemet a filter method')
+            logger.warning("Filter does not implemet a filter method")
             return
 
         handlers = self._handlers
@@ -154,9 +121,9 @@ class LogPlugin(Plugin):
 
         else:
             logger = logging.getLogger(__name__)
-            logger.warning('Handler {} does not exist')
+            logger.warning("Handler {} does not exist")
 
-    def remove_filter(self, id):
+    def remove_filter(self, id: str) -> None:
         """Remove the specified filter.
 
         Parameters
@@ -172,15 +139,15 @@ class LogPlugin(Plugin):
             handler.removeFilter(filter)
             self.filter_ids = list(self._filters.keys())
 
-    def set_formatter(self, handler_id, formatter):
+    def set_formatter(self, handler_id: str, formatter: logging.Formatter) -> None:
         """Set the formatter of the specified handler.
 
         Parameters
         ----------
-        handler_id : unicode
+        handler_id : str
             Id of the handler whose formatter shoudl be set.
 
-        formatter : Formatter
+        formatter : logging.Formatter
             Formatter for the handler.
 
         """
@@ -192,7 +159,7 @@ class LogPlugin(Plugin):
 
         else:
             logger = logging.getLogger(__name__)
-            logger.warning('Handler {} does not exist')
+            logger.warning("Handler {} does not exist")
 
     # ---- Private API --------------------------------------------------------
 

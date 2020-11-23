@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
-# -----------------------------------------------------------------------------
-# Copyright 2015-2018 by Exopy Authors, see AUTHORS for more details.
+# --------------------------------------------------------------------------------------
+# Copyright 2020 by Glaze Authors, see git history for more details.
 #
 # Distributed under the terms of the BSD license.
 #
 # The full license is in the file LICENCE, distributed with this software.
-# -----------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
 """Log plugin manifest.
 
 """
@@ -13,21 +12,23 @@ import os
 import sys
 import atexit
 import logging
-from enaml.workbench.api import PluginManifest, Extension
+from typing import Dict
+
+from enaml.workbench.api import Extension, PluginManifest, Workbench
 from enaml.workbench.ui.api import ActionItem
 from enaml.workbench.core.api import Command
 
-from ...utils.plugin_tools import make_handler
-from ..api import AppStartup
-from ..states.api import State
+from glaze.utils.plugin_tools import make_handler
+from ..lifecycle import AppStartup
+from ..states import State
 from .tools import (DayRotatingTimeHandler, StreamToLogRedirector)
 
-PLUGIN_ID ='exopy.app.logging'
+PLUGIN_ID ='glaze.logging'
 
 
-# =============================================================================
-# --- Factories ---------------------------------------------------------------
-# =============================================================================
+# ======================================================================================
+# --- Factories ------------------------------------------------------------------------
+# ======================================================================================
 
 def log_plugin_factory():
     """ Factory function for the LogPlugin.
@@ -37,11 +38,11 @@ def log_plugin_factory():
     return LogPlugin()
 
 
-# =============================================================================
-# --- Startup handler ---------------------------------------------------------
-# =============================================================================
+# ======================================================================================
+# --- Startup handler ------------------------------------------------------------------
+# ======================================================================================
 
-def start_logging(workbench, cmd_args):
+def start_logging(workbench: Workbench, cmd_args: Dict[str, str]):
     """Start logging system and register default handlers.
 
     """
@@ -49,8 +50,8 @@ def start_logging(workbench, cmd_args):
     logger.setLevel(logging.INFO)
 
     core = workbench.get_plugin('enaml.workbench.core')
-    state = core.invoke_command('exopy.app.states.get',
-                                {'state_id': 'exopy.app.directory'})
+    state = core.invoke_command('glaze.states.get',
+                                {'state_id': 'glaze.directory'})
 
     log_dir = os.path.join(state.app_directory, 'logs')
     # Create log dir if it does not exist.
@@ -60,16 +61,16 @@ def start_logging(workbench, cmd_args):
     log_plugin = workbench.get_plugin(PLUGIN_ID)
 
     # Add day rotating handler to the root logger.
-    handler = DayRotatingTimeHandler(os.path.join(log_dir, 'exopy.log'))
+    handler = DayRotatingTimeHandler(os.path.join(log_dir, log_plugin.log_filename))
     handler.setLevel(logging.DEBUG)
     aux = '%(asctime)s | %(processName)s | %(levelname)s | %(message)s'
     formatter = logging.Formatter(aux)
     handler.setFormatter(formatter)
-    log_plugin.add_handler('exopy.file_log', handler)
+    log_plugin.add_handler('glaze.file_log', handler)
     log_plugin.rotating_log = handler
 
     # Add GUI handler to root logger and store model.
-    log_plugin.gui_model = log_plugin.add_handler('exopy.gui_log', mode='ui')[0]
+    log_plugin.gui_model = log_plugin.add_handler('glaze.gui_log', mode='ui')[0]
 
     # Automatic redirection of stdout and stderr to the log system if requested
     if not cmd_args.nocapture:
@@ -83,9 +84,9 @@ def start_logging(workbench, cmd_args):
     atexit.register(logging.shutdown)
 
 
-# =============================================================================
-# --- Descriptions ------------------------------------------------------------
-# =============================================================================
+# ======================================================================================
+# --- Descriptions ---------------------------------------------------------------------
+# ======================================================================================
 
 DISPLAY_CURRENT_LOG_DESCRIPTION = \
 """ Display the current instance of the rotating log file.
@@ -97,13 +98,13 @@ ADD_HANDLER_DESCRIPTION = \
 
 Parameters
 ----------
-id : unicode
+id : str
     Id of the new handler. This id should be unique.
 
 handler : logging.Handler, optional
     Handler to add.
 
-logger : unicode, optional
+logger : str, optional
     Name of the logger to which the handler should be added. By default
     the handler is added to the root logger.
 
@@ -125,7 +126,7 @@ REMOVE_HANDLER_DESCRIPTION = \
 
 Parameters
 ----------
-id : unicode
+id : str
     Id of the handler to remove.
 
 """
@@ -135,14 +136,14 @@ ADD_FILTER_DESCRIPTION = \
 
 Parameters
 ----------
-id : unicode
+id : str
     Id of the filter to add.
 
 filter : object
     Filter to add to the specified handler (object implemeting a filter
     method).
 
-handler_id : unicode
+handler_id : str
     Id of the handler to which this filter should be added
 
 """
@@ -152,7 +153,7 @@ REMOVE_FILTER_DESCRIPTION = \
 
 Parameters
 ----------
-id : unicode
+id : str
     Id of the filter to remove.
 
 """
@@ -162,7 +163,7 @@ SET_FORMATTER_DESCRIPTION = \
 
 Parameters
 ----------
-handler_id : unicode
+handler_id : str
     Id of the handler whose formatter shoudl be set.
 
 formatter : Formatter
@@ -171,34 +172,41 @@ formatter : Formatter
 """
 
 
-# =============================================================================
-# --- Manifest ----------------------------------------------------------------
-# =============================================================================
+# ======================================================================================
+# --- Manifest -------------------------------------------------------------------------
+# ======================================================================================
 
 enamldef LogManifest(PluginManifest):
-    """Manifest for the plugin handling logging for an application.
-
-    """
+    """Manifest for the plugin handling logging for an application."""
     id = PLUGIN_ID
     factory = log_plugin_factory
 
-    # =========================================================================
-    # --- Extensions ----------------------------------------------------------
-    # =========================================================================
+    #: Filename to use for the main log file
+    log_filename: str = "glaze.log"
+
+    #: Should a menu action be added to show error reports
+    should_add_menu: bool = True
+
+    #: Path for the menu action
+    menu_path: str = 'tools/errors'
+
+    # ==================================================================================
+    # --- Extensions -------------------------------------------------------------------
+    # ==================================================================================
     Extension:
         id = 'startup'
-        point = 'exopy.app.startup'
+        point = 'glaze.startup'
         AppStartup:
-            id = 'exopy.app.logging'
+            id = 'glaze.logging'
             priority = 1
             run => (workbench, cmd_args):
                 start_logging(workbench, cmd_args)
 
     Extension:
         id = 'state'
-        point = 'exopy.app.states.state'
+        point = 'glaze.states.state'
         State:
-            id = 'exopy.app.logging'
+            id = 'glaze.logging'
             sync_members = ['handler_ids', 'filter_ids', 'gui_model']
 
     Extension:
@@ -207,33 +215,32 @@ enamldef LogManifest(PluginManifest):
         ActionItem:
             path = 'tools/log'
             label = 'Open log file'
-            command = 'exopy.app.logging.display_current_log'
-
+            command = 'glaze.logging.display_current_log'
 
     Extension:
         id = 'commands'
         point = 'enaml.workbench.core.commands'
         Command:
-            id = 'exopy.app.logging.display_current_log'
+            id = 'glaze.logging.display_current_log'
             description = DISPLAY_CURRENT_LOG_DESCRIPTION
             handler = make_handler(PLUGIN_ID, 'display_current_log')
         Command:
-            id = 'exopy.app.logging.add_handler'
+            id = 'glaze.logging.add_handler'
             description = ADD_HANDLER_DESCRIPTION
             handler = make_handler(PLUGIN_ID, 'add_handler')
         Command:
-            id = 'exopy.app.logging.remove_handler'
+            id = 'glaze.logging.remove_handler'
             description = REMOVE_HANDLER_DESCRIPTION
             handler =  make_handler(PLUGIN_ID, 'remove_handler')
         Command:
-            id = 'exopy.app.logging.add_filter'
+            id = 'glaze.logging.add_filter'
             description = ADD_FILTER_DESCRIPTION
             handler =  make_handler(PLUGIN_ID, 'add_filter')
         Command:
-            id = 'exopy.app.logging.remove_filter'
+            id = 'glaze.logging.remove_filter'
             description = REMOVE_FILTER_DESCRIPTION
             handler =  make_handler(PLUGIN_ID, 'remove_filter')
         Command:
-            id = 'exopy.app.logging.set_formatter'
+            id = 'glaze.logging.set_formatter'
             description = SET_FORMATTER_DESCRIPTION
             handler =  make_handler(PLUGIN_ID, 'set_formatter')
