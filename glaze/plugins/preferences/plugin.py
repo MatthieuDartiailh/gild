@@ -11,13 +11,13 @@
 import os
 from collections import OrderedDict
 from functools import partial
-from typing import Any
-from typing import Dict as TypedDict
-from typing import Optional
+from typing import Any, Dict, Optional
 
 import toml
-from atom.api import Dict, Str, Typed
+from atom.api import Str, Typed
 from enaml.workbench.api import Plugin
+
+from glaze.utils.plugin_tools import ExtensionsCollector
 
 from .preferences import Preferences
 
@@ -59,13 +59,14 @@ class PrefPlugin(Plugin):
         if os.path.isfile(default_pref_path):
             self._prefs = toml.load(default_pref_path, OrderedDict)
 
-        self._refresh_pref_decls()
-        self._bind_observers()
+        self._pref_decls = ExtensionsCollector(
+            workbench=self.workbench, point=PREFS_POINT, ext_class=Preferences
+        )
+        self._pref_decls.start()
 
     def stop(self) -> None:
         """Stop the plugin."""
-        self._unbind_observers()
-        self._pref_decls.clear()
+        self._pref_decls.stop()
         del self._prefs
 
     def save_preferences(self, path: Optional[str] = None) -> None:
@@ -79,12 +80,12 @@ class PrefPlugin(Plugin):
 
         """
         if path is None:
-            path = os.path.join(self.app_directory, "preferences", "default.ini")
+            path = os.path.join(self.app_directory, "preferences", "default.toml")
 
         prefs = OrderedDict()
-        for plugin_id in self._pref_decls:
+        for plugin_id in self._pref_decls.contributions:
             plugin = self.workbench.get_plugin(plugin_id)
-            decl = self._pref_decls[plugin_id]
+            decl = self._pref_decls.contributions[plugin_id]
             save_method = getattr(plugin, decl.saving_method)
             prefs[plugin_id] = save_method()
 
@@ -102,7 +103,7 @@ class PrefPlugin(Plugin):
 
         """
         if path is None:
-            path = os.path.join(self.app_directory, "preferences", "default.ini")
+            path = os.path.join(self.app_directory, "preferences", "default.toml")
 
         if not os.path.isfile(path):
             return
@@ -110,10 +111,10 @@ class PrefPlugin(Plugin):
         prefs = toml.load(path, OrderedDict)
         self._prefs.merge(prefs)
         for plugin_id in prefs:
-            if plugin_id in self._pref_decls:
+            if plugin_id in self._pref_decls.contributions:
                 plugin = self.workbench.get_plugin(plugin_id, force_create=False)
                 if plugin:
-                    decl = self._pref_decls[plugin_id]
+                    decl = self._pref_decls.contributions[plugin_id]
                     load_method = getattr(plugin, decl.loading_method)
                     load_method(prefs[plugin_id])
 
@@ -131,14 +132,14 @@ class PrefPlugin(Plugin):
 
         """
         plugin = self.workbench.get_plugin(plugin_id)
-        pref_decl = self._pref_decls[plugin_id]
+        pref_decl = self._pref_decls.contributions[plugin_id]
         for member in pref_decl.auto_save:
             # Custom observer which does not rely on the fact that the object
             # in the change dictionnary is a plugin
             observer = partial(self._auto_save_update, plugin_id)
             plugin.observe(member, observer)
 
-    def get_plugin_preferences(self, plugin_id: str) -> TypedDict[str, Any]:
+    def get_plugin_preferences(self, plugin_id: str) -> Dict[str, Any]:
         """Access to the preferences values stored for a plugin.
 
         Parameters
@@ -152,7 +153,7 @@ class PrefPlugin(Plugin):
             Preferences for the plugin as a dict.
 
         """
-        if plugin_id not in self._pref_decls:
+        if plugin_id not in self._pref_decls.contributions:
             msg = "Plugin %s is not registered in the preferences system"
             raise KeyError(msg % plugin_id)
 
@@ -175,63 +176,9 @@ class PrefPlugin(Plugin):
     _prefs = Typed(OrderedDict)
 
     #: Mapping between plugin_id and the declared preferences.
-    _pref_decls = Dict()
+    _pref_decls = Typed(ExtensionsCollector)
 
-    # TODO : low priority : refactor using Declarator pattern
-    def _refresh_pref_decls(self):
-        """Refresh the list of states contributed by extensions."""
-        workbench = self.workbench
-        point = workbench.get_extension_point(PREFS_POINT)
-        extensions = point.extensions
-
-        # If no extension remain clear everything
-        if not extensions:
-            self._pref_decls.clear()
-            return
-
-        # Map extension to preference declaration
-        new_ids = dict()
-        old_ids = self._pref_decls
-        for extension in extensions:
-            if extension.plugin_id in old_ids:
-                pref = old_ids[extension.plugin_id]
-            else:
-                pref = self._load_pref_decl(extension)
-            new_ids[extension.plugin_id] = pref
-
-        self._pref_decls = new_ids
-
-    def _load_pref_decl(self, extension):
-        """Get the Preferences contributed by an extension
-
-        Parameters
-        ----------
-        extension : Extension
-            Extension contributing to the pref extension point.
-
-        Returns
-        -------
-        pref_decl : Preferences
-            Preference object contributed by the extension.
-
-        """
-        # Getting the pref declaration contributed by the extension, either
-        # as a child or returned by the factory. Only the first state is
-        # considered.
-        workbench = self.workbench
-        prefs = extension.get_children(Preferences)
-        if extension.factory is not None and not prefs:
-            pref = extension.factory(workbench)
-            if not isinstance(pref, Preferences):
-                msg = "extension '%s' created non-Preferences of type '%s'"
-                args = (extension.qualified_id, type(pref).__name__)
-                raise TypeError(msg % args)
-        else:
-            pref = prefs[0]
-
-        return pref
-
-    def _auto_save_update(self, plugin_id: str, change: TypedDict[str, Any]) -> None:
+    def _auto_save_update(self, plugin_id: str, change: Dict[str, Any]) -> None:
         """Observer for the auto-save members
 
         Parameters
@@ -251,19 +198,3 @@ class PrefPlugin(Plugin):
             self._prefs[plugin_id] = {name: value}
 
         self._prefs.write()
-
-    def _on_pref_decls_updated(self, change: TypedDict[str, Any]) -> None:
-        """The observer for the preferences extension point"""
-        self._refresh_pref_decls()
-
-    def _bind_observers(self) -> None:
-        """Setup the observers for the plugin."""
-        workbench = self.workbench
-        point = workbench.get_extension_point(PREFS_POINT)
-        point.observe("extensions", self._on_pref_decls_updated)
-
-    def _unbind_observers(self) -> None:
-        """Remove the observers for the plugin."""
-        workbench = self.workbench
-        point = workbench.get_extension_point(PREFS_POINT)
-        point.unobserve("extensions", self._on_pref_decls_updated)

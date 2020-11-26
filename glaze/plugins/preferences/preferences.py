@@ -10,6 +10,8 @@
 """
 from atom.api import List, Str
 from enaml.core.api import Declarative, d_, d_func
+from enaml.widgets.container import Container
+from enaml.workbench.api import Workbench
 
 
 class Preferences(Declarative):
@@ -36,7 +38,7 @@ class Preferences(Declarative):
     #: and returning an autonomous enaml view (Container) used to edit
     #: the preferences.
     @d_func
-    def edit_view(self, workbench, id):
+    def edit_view(self, workbench: Workbench, id: str) -> Container:
         """Create a view to edit the preferences.
 
         Parameters
@@ -44,7 +46,7 @@ class Preferences(Declarative):
         workbench :
             Reference to the application workbench.
 
-        id : unicode
+        id : str
             Id of the plugin for which to generate the view.
 
         Returns
