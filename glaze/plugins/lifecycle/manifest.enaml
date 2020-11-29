@@ -8,6 +8,8 @@
 """App plugin manifest.
 
 """
+from typing import TYPE_CHECKING
+
 from enaml.icon import IconImage, Icon
 from enaml.image import Image
 from enaml.workbench.api import Extension, PluginManifest, ExtensionPoint
@@ -18,7 +20,10 @@ from enaml.workbench.ui.workbench_window import WorkbenchWindow
 # --- Factories ------------------------------------------------------------------------
 # ======================================================================================
 
-def app_plugin_factory():
+if TYPE_CHECKING:
+    from .plugin import IconManagerPlugin
+
+def app_plugin_factory() -> "LifecylePlugin":
     """Factory function for the app plugin.
 
     """
@@ -51,7 +56,7 @@ of other plugins is mandatory."""
 # ======================================================================================
 
 enamldef LifecyleManifest(PluginManifest):
-    """Exopy app plugin manifest.
+    """Application lifecycle plugin manifest.
 
     """
     id = "glaze.lifecylce"

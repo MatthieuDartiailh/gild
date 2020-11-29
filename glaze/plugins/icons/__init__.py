@@ -8,19 +8,24 @@
 """Application icons management plugins.
 
 """
+import enaml
+
 from .icon_theme import Icon, IconTheme
+
+with enaml.imports():
+    from .maifest import IconManagerManifest
 
 
 def get_icon(workbench, icon_id):
     """Utility function querying an icon.
 
     This function is provided to be more compact than using the core plugin.
-    All widgets if the main application window is one of their parent can
-    access the workbench thanks to dynamic scoping.
+    All widgets can access the workbench thanks to dynamic scoping if the main
+    application window is one of their parent.
 
     """
     plugin = workbench.get_plugin("glaze.icons")
     return plugin.get_icon(icon_id)
 
 
-__all__ = ["IconTheme", "Icon", "get_icon"]
+__all__ = ["IconTheme", "Icon", "IconManagerManifest", "get_icon"]

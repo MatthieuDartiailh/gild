@@ -12,7 +12,7 @@ import os
 import sys
 import atexit
 import logging
-from typing import Dict
+from typing import Dict, TYPE_CHECKING
 
 from enaml.core.api import Conditional
 from enaml.workbench.api import Extension, PluginManifest, Workbench
@@ -22,7 +22,7 @@ from enaml.workbench.core.api import Command
 from glaze.utils.plugin_tools import make_handler
 from ..lifecycle import AppStartup
 from ..states import State
-from .tools import (DayRotatingTimeHandler, StreamToLogRedirector)
+from .tools import DayRotatingTimeHandler, GuiHandler, LogModel, StreamToLogRedirector
 
 PLUGIN_ID ="glaze.logging"
 
@@ -31,7 +31,10 @@ PLUGIN_ID ="glaze.logging"
 # --- Factories ------------------------------------------------------------------------
 # ======================================================================================
 
-def log_plugin_factory():
+if TYPE_CHECKING:
+    from .plugin import LogPlugin
+
+def log_plugin_factory() -> LogPlugin:
     """ Factory function for the LogPlugin.
 
     """
@@ -43,7 +46,9 @@ def log_plugin_factory():
 # --- Startup handler ------------------------------------------------------------------
 # ======================================================================================
 
-def start_logging(workbench: Workbench, cmd_args: Dict[str, str]):
+# FIXME cleanup and add more parametrization from the manifest
+# (may need an extra extnesion point)
+def start_logging(workbench: Workbench, cmd_args: Dict[str, str]) -> None:
     """Start logging system and register default handlers.
 
     """
@@ -71,7 +76,8 @@ def start_logging(workbench: Workbench, cmd_args: Dict[str, str]):
     log_plugin.rotating_log = handler
 
     # Add GUI handler to root logger and store model.
-    log_plugin.gui_model = log_plugin.add_handler("glaze.gui_log", mode="ui")[0]
+    log_plugin.gui_model = model = LogModel()
+    og_plugin.add_handler("glaze.gui_log", GuiHandler(model))
 
     # Automatic redirection of stdout and stderr to the log system if requested
     if not cmd_args.nocapture:

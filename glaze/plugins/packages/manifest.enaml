@@ -31,12 +31,15 @@ from ..errors.widgets import BasicErrorsDisplay
 PLUGIN_ID = 'glaze.packages'
 logger = logging.getLogger(__name__)
 
-# =============================================================================
+# ======================================================================================
 # --- Factories ------------------------------------------------------------------------
-# =============================================================================
+# ======================================================================================
 
-def packages_plugin_factory():
-    """Factory function for the PackagesPLugin
+if TYPE_CHECKING:
+    from .plugin import PackagesPlugin
+
+def packages_plugin_factory() -> "PackagesPlugin":
+    """Factory function for the PackagesPlugin
 
     """
     from .plugin import PackagesPlugin

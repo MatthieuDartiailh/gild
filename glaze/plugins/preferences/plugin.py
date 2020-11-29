@@ -109,7 +109,9 @@ class PrefPlugin(Plugin):
             return
 
         prefs = toml.load(path, OrderedDict)
-        self._prefs.merge(prefs)
+        self._prefs.merge(
+            prefs
+        )  # FIXME need a custom way to merge dict (move from errors to some utils)
         for plugin_id in prefs:
             if plugin_id in self._pref_decls.contributions:
                 plugin = self.workbench.get_plugin(plugin_id, force_create=False)

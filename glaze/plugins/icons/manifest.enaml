@@ -9,6 +9,7 @@
 
 """
 import os
+from typing import TYPE_CHECKING
 
 import enaml.icon
 from enaml.workbench.api import PluginManifest, ExtensionPoint, Extension
@@ -21,7 +22,10 @@ from .icon_theme import IconTheme
 # --- Factories ------------------------------------------------------------------------
 # ======================================================================================
 
-def icons_plugin_factory():
+if TYPE_CHECKING:
+    from .plugin import IconManagerPlugin
+
+def icons_plugin_factory() -> "IconManagerPlugin":
     """ Factory function for the LogPlugin.
 
     """

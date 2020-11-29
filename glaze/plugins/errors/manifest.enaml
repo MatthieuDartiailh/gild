@@ -11,6 +11,7 @@
 import logging
 from pprint import pformat
 from collections import defaultdict, Mapping
+from typing import TYPE_CHECKING
 
 from enaml.core.api import Conditional
 from enaml.workbench.api import PluginManifest, ExtensionPoint, Extension
@@ -29,7 +30,7 @@ PLUGIN_ID ="glaze.errors"
 logger = logging.getLogger(__name__)
 
 
-def recursive_update(to_update, data):
+def recursive_update(to_update: Mapping, data: Mapping) -> None:
     """Update a dictionary and all the mapping found as values.
 
     Parameters
@@ -53,7 +54,10 @@ def recursive_update(to_update, data):
 # --- Factories ------------------------------------------------------------------------
 # ======================================================================================
 
-def errors_plugin_factory():
+if TYPE_CHECKING:
+    from .plugin import ErrorsPlugin
+
+def errors_plugin_factory() -> "ErrorsPlugin":
     """ Factory function for the LogPlugin.
 
     """
