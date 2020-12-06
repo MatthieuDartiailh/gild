@@ -9,6 +9,7 @@
 
 """
 import logging
+from typing import MutableMapping, Union
 
 import pkg_resources
 from atom.api import Dict, List
@@ -44,7 +45,7 @@ class PackagesPlugin(Plugin):
         core = self.workbench.get_plugin("enaml.workbench.core")
         cmd = "glaze.errors.signal"
 
-        packages: Dict[str, Dict[str, str]] = dict()
+        packages: MutableMapping[str, Union[str, MutableMapping[str, str]]] = dict()
         registered: List[PluginManifest] = []
         core.invoke_command("glaze.errors.enter_error_gathering", {})
         for ep in pkg_resources.iter_entry_points("exopy_package_extension"):
@@ -60,7 +61,6 @@ class PackagesPlugin(Plugin):
                 continue
 
             # Get all manifests
-            packages[ep.name] = {}
             manifests = ep.load()()
             if not isinstance(manifests, list):
                 msg = "Package %s entry point must return a list, not %s"
@@ -76,6 +76,8 @@ class PackagesPlugin(Plugin):
                 core.invoke_command(cmd, dict(kind="package", id=ep.name, message=msg))
                 continue
 
+            ext_pack_contrib: MutableMapping[str, str] = {}
+            packages[ep.name] = ext_pack_contrib
             for manifest in manifests:
                 inst = manifest()
                 try:
@@ -86,7 +88,7 @@ class PackagesPlugin(Plugin):
                     )
                     continue
 
-                packages[ep.name][inst.id] = "Successfully registered"
+                ext_pack_contrib[inst.id] = "Successfully registered"
                 priority = getattr(inst, "priority", 100)
                 # Keep the insertion index, to avoid comparing id when
                 # sorting (it would make no sense).

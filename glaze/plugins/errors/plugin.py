@@ -13,7 +13,7 @@ from collections import defaultdict
 from inspect import cleandoc
 from pprint import pformat
 from textwrap import fill
-from typing import Any, Dict, Optional
+from typing import Any, Mapping, Optional
 
 import enaml
 from atom.api import Int, List, Typed
@@ -200,7 +200,7 @@ class ErrorsPlugin(Plugin):
     #: while the gathering mode was active.
     _delayed = Typed(defaultdict, (list,))
 
-    def _update_errors(self, change: Dict[str, Any]) -> None:
+    def _update_errors(self, change: Mapping[str, Any]) -> None:
         """Update the list of supported errors when the registered handlers
         change
 

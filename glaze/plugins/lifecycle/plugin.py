@@ -8,7 +8,7 @@
 """Application plugin handling the application startup and closing.
 
 """
-from typing import Any, Dict
+from typing import Any, Mapping
 
 from atom.api import Typed
 from enaml.widgets.window import CloseEvent, Window
@@ -90,7 +90,7 @@ class LifecyclePlugin(Plugin):
         del self.startup, self.closing, self.closed
         del self._start_heap, self._clean_heap
 
-    def run_app_startup(self, cmd_args: Dict[str, str]) -> None:
+    def run_app_startup(self, cmd_args: Mapping[str, str]) -> None:
         """Run all the registered app startups based on their priority."""
         for runner in self._start_heap:
             runner.run(self.workbench, cmd_args)
@@ -117,7 +117,7 @@ class LifecyclePlugin(Plugin):
     #: Priority heap storing contributed AppClosed by priority.
     _clean_heap = Typed(PriorityHeap, ())
 
-    def _update_heap(self, change: Dict[str, Any]) -> None:
+    def _update_heap(self, change: Mapping[str, Any]) -> None:
         """Update the heap corresponding to the updated contribution.
 
         This does not need to rely on container notifications as the

@@ -12,7 +12,7 @@ import os
 import sys
 import atexit
 import logging
-from typing import Dict, TYPE_CHECKING
+from typing import Mapping, TYPE_CHECKING
 
 from enaml.core.api import Conditional
 from enaml.workbench.api import Extension, PluginManifest, Workbench
@@ -48,7 +48,7 @@ def log_plugin_factory() -> LogPlugin:
 
 # FIXME cleanup and add more parametrization from the manifest
 # (may need an extra extnesion point)
-def start_logging(workbench: Workbench, cmd_args: Dict[str, str]) -> None:
+def start_logging(workbench: Workbench, cmd_args: Mapping[str, str]) -> None:
     """Start logging system and register default handlers.
 
     """

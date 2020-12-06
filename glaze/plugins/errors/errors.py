@@ -8,7 +8,7 @@
 """Declarations for the extensions to the error plugin.
 
 """
-from typing import Dict, List, Union
+from typing import List, Mapping, Union
 
 from atom.api import Str
 from enaml.core.api import Declarative, d_, d_func
@@ -27,7 +27,9 @@ class ErrorHandler(Declarative):
     description = d_(Str())
 
     @d_func
-    def handle(self, workbench: Workbench, infos: Union[Dict, List[Dict]]) -> Widget:
+    def handle(
+        self, workbench: Workbench, infos: Union[Mapping, List[Mapping]]
+    ) -> Widget:
         """Handle the report by taking any appropriate measurement.
 
         The error should always be logged to be sure that a trace remains.

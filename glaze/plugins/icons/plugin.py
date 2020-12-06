@@ -10,7 +10,7 @@
 """
 import logging
 from traceback import format_exc
-from typing import Any, Dict
+from typing import Any, Mapping
 
 from atom.api import List, Str, Typed
 from enaml.icon import Icon as EnamlIcon
@@ -129,7 +129,7 @@ class IconManagerPlugin(HasPreferencesPlugin):
     #: Currently selected theme.
     _current_theme = Typed(IconTheme)
 
-    def _add_extensions_to_selected_theme(self, change: Dict[str, Any]) -> None:
+    def _add_extensions_to_selected_theme(self, change: Mapping[str, Any]) -> None:
         """Add contributed theme extension to the selected theme."""
         selected = self._current_theme
 
@@ -162,7 +162,7 @@ class IconManagerPlugin(HasPreferencesPlugin):
         if self._icon_theme_extensions:
             self._add_extensions_to_selected_theme({})
 
-    def _list_icon_themes(self, change: Dict[str, Any]) -> None:
+    def _list_icon_themes(self, change: Mapping[str, Any]) -> None:
         """List the declared icon themes."""
         self.icon_themes = sorted(self._icon_themes.contributions)
 

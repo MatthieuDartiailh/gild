@@ -12,7 +12,7 @@
 import re
 from importlib import import_module
 from traceback import format_exc
-from typing import Any, Dict, Optional
+from typing import Any, MutableMapping, Optional
 
 from atom.api import Bool, Str
 from enaml.core.api import Declarative, d_
@@ -52,7 +52,9 @@ class Declarator(Declarative):
 
         return self.parent.get_group()
 
-    def register(self, collector: DeclaratorCollector, traceback: Dict[str, Any]):
+    def register(
+        self, collector: DeclaratorCollector, traceback: MutableMapping[str, Any]
+    ):
         """Add the contribution of this extension to the plugin.
 
         Parameters
@@ -117,7 +119,7 @@ class GroupDeclarator(Declarator):
             return ".".join(paths)
         return None
 
-    def register(self, plugin: Plugin, traceback: Dict[str, Any]) -> None:
+    def register(self, plugin: Plugin, traceback: MutableMapping[str, Any]) -> None:
         """Register all children Declarator."""
         if not PATH_VALIDATOR.match(self.path):
             msg = "Invalid path {} in {} (path {}, group {})"
@@ -155,7 +157,9 @@ class GroupDeclarator(Declarator):
         )
 
 
-def import_and_get(path, name: str, traceback: Dict[str, str], id: str) -> None:
+def import_and_get(
+    path, name: str, traceback: MutableMapping[str, str], id: str
+) -> None:
     """Function importing a module and retrieving an object from it.
 
     This function provides a common pattern for declarator.

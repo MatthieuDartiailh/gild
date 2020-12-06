@@ -11,7 +11,7 @@
 from argparse import ArgumentParser
 from operator import itemgetter
 from traceback import format_exc
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Mapping, Optional
 
 from atom.api import Atom, Dict, List, Str, Value
 from pkg_resources import iter_entry_points
@@ -32,7 +32,7 @@ class ArgParser(Atom):
     #: add_argument to allow to modify the choices after adding the argument.
     choices = Dict()
 
-    def parse_args(self, args: Optional[list] = None) -> Dict[str, Any]:
+    def parse_args(self, args: Optional[list] = None) -> Mapping[str, Any]:
         """Parse the arguments.
 
         By default the arguments passed on the command line are parsed.
@@ -40,15 +40,15 @@ class ArgParser(Atom):
         """
         if not self._parser:
             self._init_parser()
-        args = self._parser.parse_args(args)
+        parsed = self._parser.parse_args(args)
 
         # Resolve choices.
         mapping = self._arg_to_choices
-        for k, v in vars(args).items():
+        for k, v in vars(parsed).items():
             if k in mapping:
-                setattr(args, k, mapping[k][v])
+                setattr(parsed, k, mapping[k][v])
 
-        return args
+        return parsed
 
     def add_argument(self, *args, **kwargs) -> None:
         """Add an argument to the parser.

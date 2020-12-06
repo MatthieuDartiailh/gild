@@ -12,7 +12,7 @@
 from collections import defaultdict
 from typing import Any
 from typing import Callable as TypedCallable
-from typing import Iterable, Tuple, Union
+from typing import Iterable, Mapping, Tuple, Union
 
 from atom.api import Atom, Callable, Coerced, Dict, List, Str, Typed
 from enaml.workbench.api import Extension, Plugin, Workbench
@@ -193,7 +193,7 @@ class BaseCollector(Atom):
         """
         raise NotImplementedError()
 
-    def _on_contribs_updated(self, change: Dict[str, Any]) -> None:
+    def _on_contribs_updated(self, change: Mapping[str, Any]) -> None:
         """The observer for the extension point"""
         raise NotImplementedError()
 
@@ -336,7 +336,7 @@ class ExtensionsCollector(BaseCollector):
 
         return contribs
 
-    def _on_contribs_updated(self, change: Dict[str, Any]) -> None:
+    def _on_contribs_updated(self, change: Mapping[str, Any]) -> None:
         """The observer for the extension point"""
         self._refresh_contributions()
 
@@ -440,7 +440,7 @@ class DeclaratorCollector(BaseCollector):
 
         return contribs
 
-    def _unregister_decls(self, extensions: Dict[Extension, List]) -> None:
+    def _unregister_decls(self, extensions: Mapping[Extension, List]) -> None:
         """Unregister the declarations linked to some extensions."""
         contributions = self.contributions.copy()
         for extension in extensions:
@@ -454,7 +454,7 @@ class DeclaratorCollector(BaseCollector):
                 self.contributions = contributions
             self.contributions = c
 
-    def _on_contribs_updated(self, change: Dict[str, Any]) -> None:
+    def _on_contribs_updated(self, change: Mapping[str, Any]) -> None:
         """Update the registered declarations when an extension is
         added/removed.
 

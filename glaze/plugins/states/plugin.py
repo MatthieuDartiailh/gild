@@ -9,9 +9,7 @@
 
 """
 import contextlib
-from typing import Any
-from typing import Dict as TypedDict
-from typing import Iterator, Tuple
+from typing import Any, Iterator, Mapping, Tuple
 
 from atom.api import Atom, Bool, Dict, Typed, Value
 from enaml.workbench.api import Plugin
@@ -55,7 +53,7 @@ class _StateHolder(Atom):
         finally:
             self._allow_set = False
 
-    def _updater(self, changes: TypedDict[str, Any]) -> None:
+    def _updater(self, changes: Mapping[str, Any]) -> None:
         """Observer handler keeping the state up to date with the plugin."""
         with self._setting_allowed():
             setattr(self, changes["name"], changes["value"])
@@ -149,7 +147,7 @@ class StatePlugin(Plugin):
 
         return state_object
 
-    def _notify_states_death(self, change: Dict[str, Any]) -> None:
+    def _notify_states_death(self, change: Mapping[str, Any]) -> None:
         """Notify that the plugin contributing a state is not plugged anymore.
 
         This method is used to observe the contribution member of the _states.

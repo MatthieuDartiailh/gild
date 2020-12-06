@@ -10,7 +10,7 @@
 """
 import os
 import sys
-from typing import Any, Dict
+from typing import Any, Mapping
 
 import toml
 from enaml.workbench.api import Extension, ExtensionPoint, PluginManifest, Workbench
@@ -92,7 +92,7 @@ enamldef AppDirSelectionDialog(Dialog): dial:
             clicked :: dial.reject()
 
 
-def check_app_folder(workbench: Workbench, cmd_args: Dict[str, str]) -> None:
+def check_app_folder(workbench: Workbench, cmd_args: Mapping[str, str]) -> None:
     """Check whether or not the app folder is defined
 
     If not prompt the user to choose.
@@ -165,8 +165,8 @@ def plugin_init_complete(event: ExecutionEvent) -> None:
     pref.plugin_init_complete(event.parameters["plugin_id"])
 
 
-def get_plugin_preferences(event: ExecutionEvent) -> Dict[str, Any]:
-    """Handler for the "hqc_meas.preferences.get" command
+def get_plugin_preferences(event: ExecutionEvent) -> Mapping[str, Any]:
+    """Handler for the "glaze.preferences.get" command
 
     """
     pref = event.workbench.get_plugin(PLUGIN_ID)

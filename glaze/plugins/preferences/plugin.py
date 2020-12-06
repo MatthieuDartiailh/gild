@@ -11,7 +11,7 @@
 import os
 from collections import OrderedDict
 from functools import partial
-from typing import Any, Dict, Optional
+from typing import Any, Mapping, Optional
 
 import toml
 from atom.api import Str, Typed
@@ -141,7 +141,7 @@ class PrefPlugin(Plugin):
             observer = partial(self._auto_save_update, plugin_id)
             plugin.observe(member, observer)
 
-    def get_plugin_preferences(self, plugin_id: str) -> Dict[str, Any]:
+    def get_plugin_preferences(self, plugin_id: str) -> Mapping[str, Any]:
         """Access to the preferences values stored for a plugin.
 
         Parameters
@@ -180,7 +180,7 @@ class PrefPlugin(Plugin):
     #: Mapping between plugin_id and the declared preferences.
     _pref_decls = Typed(ExtensionsCollector)
 
-    def _auto_save_update(self, plugin_id: str, change: Dict[str, Any]) -> None:
+    def _auto_save_update(self, plugin_id: str, change: Mapping[str, Any]) -> None:
         """Observer for the auto-save members
 
         Parameters

@@ -8,7 +8,7 @@
 """App plugin extensions declarations.
 
 """
-from typing import Dict
+from typing import Mapping
 
 from atom.api import Int, Str
 from enaml.core.api import Declarative, d_, d_func
@@ -35,7 +35,7 @@ class AppStartup(Declarative):
     priority = d_(Int(20))
 
     @d_func
-    def run(self, workbench: Workbench, cmd_args: Dict[str, str]) -> None:
+    def run(self, workbench: Workbench, cmd_args: Mapping[str, str]) -> None:
         """Function called during app start-up.
 
         Parameters
