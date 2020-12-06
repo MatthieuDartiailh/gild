@@ -9,3 +9,32 @@
 """Utility tools for handling preferences and declaring plugin extensions.
 
 """
+from typing import Any
+
+from enaml.workbench.api import Workbench
+
+
+# FIXME
+def invoke_command(
+    workbench: Workbench, cmd: str, parameters: dict, trigger: Any = None
+) -> Any:
+    """[summary]
+
+    Parameters
+    ----------
+    workbench : Workbench
+        [description]
+    cmd : str
+        [description]
+    parameters : dict
+        [description]
+    trigger : Any, optional
+        [description], by default None
+
+    Returns
+    -------
+    Any
+        [description]
+    """
+    core = workbench.get_plugin("enaml.core")
+    return core.invoke_command(cmd, parameters, trigger)
