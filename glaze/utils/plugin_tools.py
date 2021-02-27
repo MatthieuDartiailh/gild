@@ -16,7 +16,7 @@ from typing import Iterable, Mapping, Tuple, Union
 
 from atom.api import Atom, Callable, Coerced, Dict, List, Str, Typed
 from enaml.workbench.api import Extension, Plugin, Workbench
-from enaml.workbench.command.execution_event import ExecutionEvent
+from enaml.workbench.core.execution_event import ExecutionEvent
 
 from .atom_util import preferences_from_members, update_members_from_preferences
 

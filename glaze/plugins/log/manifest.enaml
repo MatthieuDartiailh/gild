@@ -34,7 +34,7 @@ PLUGIN_ID ="glaze.logging"
 if TYPE_CHECKING:
     from .plugin import LogPlugin
 
-def log_plugin_factory() -> LogPlugin:
+def log_plugin_factory() -> "LogPlugin":
     """ Factory function for the LogPlugin.
 
     """
@@ -189,13 +189,13 @@ enamldef LogManifest(PluginManifest):
     factory = log_plugin_factory
 
     #: Filename to use for the main log file
-    log_filename: str = "glaze.log"
+    attr log_filename: str = "glaze.log"
 
     #: Should a menu action be added to show error reports
-    should_add_menu: bool = True
+    attr should_add_menu: bool = True
 
     #: Path for the menu action
-    menu_path: str = "tools/log"
+    attr menu_path: str = "/tools/log"
 
     # ==================================================================================
     # --- Extensions -------------------------------------------------------------------

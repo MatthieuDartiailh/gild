@@ -20,6 +20,7 @@ import logging
 from collections import Mapping
 from pprint import pformat
 from traceback import format_exc
+from typing import TYPE_CHECKING
 
 from enaml.workbench.api import PluginManifest, Extension
 from enaml.widgets.api import MultilineField
@@ -79,7 +80,7 @@ enamldef PackagesManifest(PluginManifest):
     factory = packages_plugin_factory
 
     #: Setuptools extension point from which to load extension package contributions
-    extension_point = ""
+    attr extension_point = ""
 
     # ==================================================================================
     # --- Extensions -------------------------------------------------------------------

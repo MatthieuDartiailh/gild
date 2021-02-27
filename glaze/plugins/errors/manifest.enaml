@@ -150,10 +150,10 @@ enamldef ErrorsManifest(PluginManifest):
     factory = errors_plugin_factory
 
     #: Should a menu action be added to show error reports
-    should_add_menu: bool = True
+    attr should_add_menu: bool = True
 
     #: Path for the menu action
-    menu_path: str = "tools/errors"
+    attr menu_path: str = "tools/errors"
 
     # ==================================================================================
     # --- Extension points -------------------------------------------------------------

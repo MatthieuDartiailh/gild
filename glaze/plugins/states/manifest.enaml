@@ -10,7 +10,6 @@
 """
 from enaml.workbench.api import PluginManifest, Extension, ExtensionPoint
 from enaml.workbench.core.api import Command
-from enaml.workbench.ui.api import ActionItem, MenuItem, ItemGroup
 
 from glaze.utils.plugin_tools import make_handler
 

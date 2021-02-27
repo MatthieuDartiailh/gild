@@ -8,7 +8,7 @@
 """Extension objects to the icon plugin.
 
 """
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, List as TList
 
 from atom.api import Dict, List, Str
 from enaml.core.api import Declarative, d_, d_func
@@ -86,7 +86,7 @@ class IconThemeExtension(Declarative):
     #: Id of the icon theme to which to contribute the children Icon objects.
     theme = d_(Str())
 
-    def icons(self) -> List["Icon"]:
+    def icons(self) -> TList["Icon"]:
         """List the associated icons."""
         if not self._icons:
             self._icons = [c for c in self.children if isinstance(c, Icon)]
@@ -107,6 +107,6 @@ class Icon(Declarative):
     id = d_(Str())
 
     @d_func
-    def get_icon(self, manager: IconManagerPlugin, theme: str) -> EnamlIcon:
+    def get_icon(self, manager: "IconManagerPlugin", theme: str) -> EnamlIcon:
         """Generate the corresponding enaml icon object."""
         raise NotImplementedError()

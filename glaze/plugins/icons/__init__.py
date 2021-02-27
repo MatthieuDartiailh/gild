@@ -13,7 +13,7 @@ import enaml
 from .icon_theme import Icon, IconTheme
 
 with enaml.imports():
-    from .maifest import IconManagerManifest
+    from .manifest import IconManagerManifest
 
 
 def get_icon(workbench, icon_id):

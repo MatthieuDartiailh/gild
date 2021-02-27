@@ -13,7 +13,6 @@ from typing import TYPE_CHECKING
 from enaml.icon import IconImage, Icon
 from enaml.image import Image
 from enaml.workbench.api import Extension, PluginManifest, ExtensionPoint
-from enaml.workbench.ui.api import ActionItem, Branding, MenuItem, ItemGroup
 from enaml.workbench.ui.workbench_window import WorkbenchWindow
 
 # ======================================================================================
@@ -55,7 +54,7 @@ of other plugins is mandatory."""
 # --- Manifest -------------------------------------------------------------------------
 # ======================================================================================
 
-enamldef LifecyleManifest(PluginManifest):
+enamldef LifecycleManifest(PluginManifest):
     """Application lifecycle plugin manifest.
 
     """

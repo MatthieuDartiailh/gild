@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING
 import enaml.icon
 from enaml.workbench.api import PluginManifest, ExtensionPoint, Extension
 
-from ..preferences.api import Preferences
+from ..preferences import Preferences
 from .icon_theme import IconTheme
 
 
