@@ -38,7 +38,9 @@ class PrefPlugin(Plugin):
         """Start the plugin, locate app folder and load default preferences."""
         # Look for the app specific storage under the user to locate the application
         # folder that may be stored somewhere else.
-        storage_path = os.path.join(os.path.expanduser("~"), self.location_file)
+        storage_path = os.path.join(
+            os.path.expanduser("~"), "." + self.manifest.application_name
+        )
         if os.path.isfile(storage_path):
             self.app_directory = app_path = toml.load(storage_path)["app_path"]
         else:
@@ -46,7 +48,7 @@ class PrefPlugin(Plugin):
                 "The location file does not exist. This should "
                 "never happen since it is created during the app startup, "
                 "ensure that the preference plugin startup sequence runs before "
-                "starting teh plugin."
+                "starting the plugin."
             )
         self.app_directory = app_path
         self._prefs = OrderedDict()
@@ -89,7 +91,7 @@ class PrefPlugin(Plugin):
             save_method = getattr(plugin, decl.saving_method)
             prefs[plugin_id] = save_method()
 
-        with open(path, "w") as f:
+        with open(path, "w", encoding="utf-8") as f:
             toml.dump(prefs, f)
 
     def load_preferences(self, path: Optional[str] = None) -> None:
@@ -156,11 +158,12 @@ class PrefPlugin(Plugin):
 
         """
         if plugin_id not in self._pref_decls.contributions:
+            print(self._pref_decls.contributions)
             msg = "Plugin %s is not registered in the preferences system"
             raise KeyError(msg % plugin_id)
 
         if plugin_id in self._prefs:
-            return self._prefs[plugin_id]
+            return self._prefs.get(plugin_id, dict())
 
         return {}
 

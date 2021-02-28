@@ -67,7 +67,9 @@ def start_logging(workbench: Workbench, cmd_args: Mapping[str, str]) -> None:
     log_plugin = workbench.get_plugin(PLUGIN_ID)
 
     # Add day rotating handler to the root logger.
-    handler = DayRotatingTimeHandler(os.path.join(log_dir, log_plugin.log_filename))
+    handler = DayRotatingTimeHandler(
+        os.path.join(log_dir, log_plugin.manifest.log_filename)
+    )
     handler.setLevel(logging.DEBUG)
     aux = "%(asctime)s | %(processName)s | %(levelname)s | %(message)s"
     formatter = logging.Formatter(aux)
@@ -77,7 +79,7 @@ def start_logging(workbench: Workbench, cmd_args: Mapping[str, str]) -> None:
 
     # Add GUI handler to root logger and store model.
     log_plugin.gui_model = model = LogModel()
-    og_plugin.add_handler("glaze.gui_log", GuiHandler(model))
+    log_plugin.add_handler("glaze.gui_log", GuiHandler(model))
 
     # Automatic redirection of stdout and stderr to the log system if requested
     if not cmd_args.nocapture:
@@ -202,7 +204,7 @@ enamldef LogManifest(PluginManifest):
     # ==================================================================================
     Extension:
         id = "startup"
-        point = "glaze.startup"
+        point = "glaze.lifecycle.startup"
         AppStartup:
             id = "glaze.logging"
             priority = 1

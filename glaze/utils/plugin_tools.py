@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Copyright 2020 by Glaze Authors, see git history for more details.
 #
@@ -307,7 +306,7 @@ class ExtensionsCollector(BaseCollector):
         if tb:
             core = self.workbench.get_plugin("enaml.workbench.core")
             core.invoke_command(
-                "exopy.app.errors.signal",
+                "glaze.errors.signal",
                 {"kind": "extensions", "point": self.point, "errors": tb},
             )
 
@@ -417,7 +416,7 @@ class DeclaratorCollector(BaseCollector):
         if tb:
             core = self.workbench.get_plugin("enaml.workbench.core")
             core.invoke_command(
-                "exopy.app.errors.signal",
+                "glaze.errors.signal",
                 {"kind": "extensions", "point": self.point, "errors": tb},
             )
 

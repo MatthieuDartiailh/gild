@@ -29,7 +29,7 @@ class AppStartup(Declarative):
     id = d_(Str())
 
     #: The priority determine the order in which AppStartup are called. The
-    #: **lowest** this number the sooner the object will be called. Two
+    #: **lower** this number the sooner the object will be called. Two
     #: AppStartup with the same priority are called in the order in which they
     #: have been discovered.
     priority = d_(Int(20))

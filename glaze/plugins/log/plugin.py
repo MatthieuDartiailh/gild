@@ -16,7 +16,7 @@ import enaml
 from atom.api import Dict, List, Str, Tuple, Typed
 from enaml.workbench.api import Plugin
 
-from .tools import DayRotatingTimeHandler
+from .tools import DayRotatingTimeHandler, LogModel
 
 with enaml.imports():
     from .widgets import LogDialog
@@ -34,8 +34,11 @@ class LogPlugin(Plugin):
     #: List of installed filters.
     filter_ids = List(Str())
 
-    # Current log
+    #: Current log
     rotating_log = Typed(DayRotatingTimeHandler)
+
+    #: Possible model for a GUI to display the log.
+    gui_model = Typed(LogModel)
 
     def display_current_log(self) -> None:
         """Display the current instance of the rotating log file."""

@@ -22,6 +22,12 @@ class Preferences(Declarative):
 
     """
 
+    #: Id of the contribution.
+    id = d_(Str())
+
+    #: Short description of what is expected to be saved.
+    description = d_(Str())
+
     #: Name of the method of the plugin contributing this extension to call
     #: when the preference plugin need to save the preferences.
     saving_method = d_(Str("preferences_from_members"))

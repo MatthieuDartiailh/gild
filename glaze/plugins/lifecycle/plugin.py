@@ -17,13 +17,13 @@ from enaml.workbench.api import Plugin
 from glaze.utils.plugin_tools import ExtensionsCollector, make_extension_validator
 from glaze.utils.priority_heap import PriorityHeap
 
-from .lifecyle_extensions import AppClosed, AppClosing, AppStartup
+from .extensions import AppClosed, AppClosing, AppStartup
 
-STARTUP_POINT = "glaze.startup"
+STARTUP_POINT = "glaze.lifecycle.startup"
 
-CLOSING_POINT = "glaze.closing"
+CLOSING_POINT = "glaze.lifecycle.closing"
 
-CLOSED_POINT = "glaze.closed"
+CLOSED_POINT = "glaze.lifecycle.closed"
 
 
 class LifecyclePlugin(Plugin):

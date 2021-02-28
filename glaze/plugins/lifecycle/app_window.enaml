@@ -8,6 +8,8 @@
 """Application window delegating life cycle decison to the plugin.
 
 """
+from enaml.workbench.ui.workbench_window import WorkbenchWindow
+
 
 enamldef AppWindow(WorkbenchWindow):
     """Custom window checking that no plugin veto the closing before closing.

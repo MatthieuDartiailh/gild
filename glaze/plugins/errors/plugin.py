@@ -13,6 +13,7 @@ from collections import defaultdict
 from inspect import cleandoc
 from pprint import pformat
 from textwrap import fill
+from traceback import format_exc, format_tb
 from typing import Any, Mapping, Optional
 
 import enaml
@@ -22,7 +23,6 @@ from enaml.widgets.widget import Widget
 from enaml.workbench.api import Plugin
 
 from ...utils.plugin_tools import ExtensionsCollector, make_extension_validator
-from ...utils.traceback import format_exc, format_tb
 from .errors import ErrorHandler
 
 with enaml.imports():

@@ -100,20 +100,22 @@ def check_app_folder(workbench: Workbench, cmd_args: Mapping[str, str]) -> None:
 
     """
     manifest = workbench.get_manifest(PLUGIN_ID)
-    app_loc = os.path.join(os.path.expanduser("~"), manifest.location_file)
-    if (not os.path.isfile(app_loc) or
-            "app_path" not in toml.load(app_loc) or
-            getattr(cmd_args, "reset_app_folder", None)):
+    app_loc = os.path.join(os.path.expanduser("~"), "." + manifest.application_name)
+    if (getattr(cmd_args, "reset_app_folder", None) or
+        not os.path.isfile(app_loc) or
+        "app_path" not in toml.load(app_loc)
+    ):
 
         # Explicit casting to detect encoding issues.
-        path = str(os.path.expanduser(os.path.join("~", manifest.app_name)))
-        dial = AppDirSelectionDialog(path=path)
+        dial = AppDirSelectionDialog(
+            path=os.path.join(os.path.expanduser("~"), manifest.application_name)
+        )
         if not dial.exec_():
             sys.exit(1)
-        with open(app_loc, "w") as f:
-            toml.dump({"app_path": path}, f)
+        with open(app_loc, "w", encoding="utf-8") as f:
+            toml.dump({"app_path": dial.path}, f)
 
-    app_path = toml.load(app_loc["app_path"])
+    app_path = toml.load(app_loc)["app_path"]
     if not os.path.isdir(app_path):
         try:
             os.makedirs(app_path)
@@ -279,7 +281,7 @@ enamldef PreferencesManifest(PluginManifest):
 
     Extension:
         id = "startup"
-        point = "glaze.startup"
+        point = "glaze.lifecycle.startup"
         AppStartup:
             id = "glaze.directory"
             priority = 0

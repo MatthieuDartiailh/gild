@@ -9,13 +9,12 @@
 
 """
 import logging
+from traceback import format_exc
 from typing import MutableMapping, Union
 
 import pkg_resources
 from atom.api import Dict, List
 from enaml.workbench.api import Plugin, PluginManifest
-
-from ...utils.traceback import format_exc
 
 logger = logging.getLogger(__name__)
 

@@ -63,14 +63,13 @@ enamldef IconManagerManifest(PluginManifest):
     # ==================================================================================
 
     Extension:
-
         id = "preferences"
         point = "glaze.preferences.plugin"
         Preferences:
-            pass
+            id = "glaze.icons"
+            description = "Default icon theme to use."
 
     Extension:
-
         id = "themes"
         point = "glaze.icons.icon_theme"
         description = "Add the default icon themes based on qtawesome."

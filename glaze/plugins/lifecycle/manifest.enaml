@@ -15,19 +15,21 @@ from enaml.image import Image
 from enaml.workbench.api import Extension, PluginManifest, ExtensionPoint
 from enaml.workbench.ui.workbench_window import WorkbenchWindow
 
+from .app_window import AppWindow
+
 # ======================================================================================
 # --- Factories ------------------------------------------------------------------------
 # ======================================================================================
 
 if TYPE_CHECKING:
-    from .plugin import IconManagerPlugin
+    from .plugin import LifecyclePlugin
 
-def app_plugin_factory() -> "LifecylePlugin":
+def app_plugin_factory() -> "LifecyclePlugin":
     """Factory function for the app plugin.
 
     """
-    from .lifecycle_plugin import LifecylePlugin
-    return LifecylePlugin()
+    from .plugin import LifecyclePlugin
+    return LifecyclePlugin()
 
 # ======================================================================================
 # --- Descriptions ---------------------------------------------------------------------
@@ -58,7 +60,7 @@ enamldef LifecycleManifest(PluginManifest):
     """Application lifecycle plugin manifest.
 
     """
-    id = "glaze.lifecylce"
+    id = "glaze.lifecycle"
     factory = app_plugin_factory
 
     # ==================================================================================
