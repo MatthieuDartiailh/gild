@@ -22,7 +22,8 @@ class Preferences(Declarative):
 
     """
 
-    #: Id of the contribution.
+    #: Id of the contribution. This MUST match the declaring plugin.
+    # FIXME make this self-generated or something
     id = d_(Str())
 
     #: Short description of what is expected to be saved.

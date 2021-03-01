@@ -134,7 +134,7 @@ class IconManagerPlugin(HasPreferencesPlugin):
         selected = self._current_theme
 
         # Assign all contributed icons from all extensions.
-        if change is None:
+        if not change:
             for k, v in self._icon_theme_extensions.contributions.items():
                 if v.theme == selected.id:
                     selected.insert_children(None, v.icons())
