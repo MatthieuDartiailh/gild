@@ -320,7 +320,6 @@ enamldef PreferencesManifest(PluginManifest):
             MenuItem:
                 path = menu_root
                 label = "Preferences"
-                after = "file"
                 ItemGroup:
                     id = "pref"
             ActionItem:

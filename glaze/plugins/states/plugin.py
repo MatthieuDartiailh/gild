@@ -158,6 +158,6 @@ class StatePlugin(Plugin):
             for dead in deads:
                 if dead in self._living_states:
                     state = self._living_states[dead]
-                    with state.setting_allowed():
+                    with state._setting_allowed():
                         state.alive = False
                     del self._living_states[dead]
