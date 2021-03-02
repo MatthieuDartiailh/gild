@@ -36,5 +36,5 @@ def invoke_command(
     Any
         [description]
     """
-    core = workbench.get_plugin("enaml.core")
+    core = workbench.get_plugin("enaml.workbench.core")
     return core.invoke_command(cmd, parameters, trigger)
