@@ -48,7 +48,7 @@ def log_plugin_factory() -> "LogPlugin":
 
 # FIXME cleanup and add more parametrization from the manifest
 # (may need an extra extnesion point)
-def start_logging(workbench: Workbench, cmd_args: Mapping[str, str]) -> None:
+def start_logging(workbench: Workbench) -> None:
     """Start logging system and register default handlers.
 
     """
@@ -64,6 +64,7 @@ def start_logging(workbench: Workbench, cmd_args: Mapping[str, str]) -> None:
     if not os.path.isdir(log_dir):
         os.mkdir(log_dir)
 
+    log_manifest = workbench.get_manifest(PLUGIN_ID)
     log_plugin = workbench.get_plugin(PLUGIN_ID)
 
     # Add day rotating handler to the root logger.
@@ -82,7 +83,7 @@ def start_logging(workbench: Workbench, cmd_args: Mapping[str, str]) -> None:
     log_plugin.add_handler("glaze.gui_log", GuiHandler(model))
 
     # Automatic redirection of stdout and stderr to the log system if requested
-    if not cmd_args.nocapture:
+    if not log_manifest.no_capture:
         redir_stdout = StreamToLogRedirector(logger)
         redir_stderr = StreamToLogRedirector(logger, stream_type="stderr")
         sys.stdout = redir_stdout
@@ -199,6 +200,9 @@ enamldef LogManifest(PluginManifest):
     #: Path for the menu action
     attr menu_path: str = "/tools/log"
 
+    #: Should we capture the stdout and stderr
+    attr no_capture: bool = False
+
     # ==================================================================================
     # --- Extensions -------------------------------------------------------------------
     # ==================================================================================
@@ -209,7 +213,7 @@ enamldef LogManifest(PluginManifest):
             id = "glaze.logging"
             priority = 1
             run => (workbench, cmd_args):
-                start_logging(workbench, cmd_args)
+                start_logging(workbench)
 
     Extension:
         id = "state"
