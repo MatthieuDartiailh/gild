@@ -102,4 +102,4 @@ class PackagesPlugin(Plugin):
     # =========================================================================
 
     #: Private list of registered manifest used when stopping the plugin.
-    _registered = List(PluginManifest)
+    _registered = List(tuple)
