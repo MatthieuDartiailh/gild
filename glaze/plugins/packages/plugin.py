@@ -13,7 +13,7 @@ from traceback import format_exc
 from typing import MutableMapping, Union
 
 import pkg_resources
-from atom.api import Dict, List
+from atom.api import Dict, List, Str
 from enaml.workbench.api import Plugin, PluginManifest
 
 logger = logging.getLogger(__name__)
@@ -47,7 +47,7 @@ class PackagesPlugin(Plugin):
         packages: MutableMapping[str, Union[str, MutableMapping[str, str]]] = dict()
         registered: List[PluginManifest] = []
         core.invoke_command("glaze.errors.enter_error_gathering", {})
-        for ep in pkg_resources.iter_entry_points("exopy_package_extension"):
+        for ep in pkg_resources.iter_entry_points(self.manifest.extension_point):
 
             # Check that all dependencies are satisfied.
             try:
