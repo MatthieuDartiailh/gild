@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright 2022 by Glaze Authors, see AUTHORS for more details.
+# Copyright 2022 by Gild Authors, see AUTHORS for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -14,7 +14,7 @@ from logging.handlers import QueueHandler
 from multiprocessing import Queue
 from time import localtime, sleep
 
-from glaze.plugins.log.tools import (
+from gild.plugins.log.tools import (
     DayRotatingTimeHandler,
     GuiHandler,
     LogModel,
@@ -40,7 +40,7 @@ def test_log_model():
     assert model.text == "".join(["%d\n" % i for i in range(4)])
 
 
-def test_gui_handler(glaze_qtbot, logger, monkeypatch):
+def test_gui_handler(gild_qtbot, logger, monkeypatch):
     """Test the gui handler."""
     model = LogModel()
     handler = GuiHandler(model)
@@ -51,7 +51,7 @@ def test_gui_handler(glaze_qtbot, logger, monkeypatch):
     def assert_text():
         assert model.text == "test\n"
 
-    glaze_qtbot.wait_until(assert_text)
+    gild_qtbot.wait_until(assert_text)
     model.clean_text()
 
     logger.debug("test")
@@ -59,7 +59,7 @@ def test_gui_handler(glaze_qtbot, logger, monkeypatch):
     def assert_text():
         assert model.text == "DEBUG: test\n"
 
-    glaze_qtbot.wait_until(assert_text)
+    gild_qtbot.wait_until(assert_text)
     model.clean_text()
 
     logger.warning("test")
@@ -67,7 +67,7 @@ def test_gui_handler(glaze_qtbot, logger, monkeypatch):
     def assert_text():
         assert model.text == "WARNING: test\n"
 
-    glaze_qtbot.wait_until(assert_text)
+    gild_qtbot.wait_until(assert_text)
     model.clean_text()
 
     logger.error("test")
@@ -75,7 +75,7 @@ def test_gui_handler(glaze_qtbot, logger, monkeypatch):
     def assert_text():
         assert model.text == "ERROR: test\n"
 
-    glaze_qtbot.wait_until(assert_text)
+    gild_qtbot.wait_until(assert_text)
     model.clean_text()
 
     logger.critical("test")
@@ -84,7 +84,7 @@ def test_gui_handler(glaze_qtbot, logger, monkeypatch):
     def assert_text():
         assert model.text == answer
 
-    glaze_qtbot.wait_until(assert_text)
+    gild_qtbot.wait_until(assert_text)
     model.clean_text()
 
     def err(record):
@@ -94,7 +94,7 @@ def test_gui_handler(glaze_qtbot, logger, monkeypatch):
     logger.info("raise")
 
 
-def test_stdout_redirection(glaze_qtbot, logger):
+def test_stdout_redirection(gild_qtbot, logger):
     """Test the redirection of stdout toward a logger."""
     model = LogModel()
     handler = GuiHandler(model)
@@ -111,10 +111,10 @@ def test_stdout_redirection(glaze_qtbot, logger):
     def assert_text():
         assert model.text == "test\n"
 
-    glaze_qtbot.wait_until(assert_text)
+    gild_qtbot.wait_until(assert_text)
 
 
-def test_stderr_redirection(glaze_qtbot, logger):
+def test_stderr_redirection(gild_qtbot, logger):
     """Test the redirection of "stderr" toward a logger."""
     model = LogModel()
     handler = GuiHandler(model)
@@ -132,7 +132,7 @@ def test_stderr_redirection(glaze_qtbot, logger):
     def assert_text():
         assert model.text == answer
 
-    glaze_qtbot.wait_until(assert_text)
+    gild_qtbot.wait_until(assert_text)
 
 
 def test_queue_handler(logger, monkeypatch):
@@ -152,7 +152,7 @@ def test_queue_handler(logger, monkeypatch):
     logger.info("raise")
 
 
-def test_logger_thread(glaze_qtbot, logger):
+def test_logger_thread(gild_qtbot, logger):
     """Test the logger thread."""
     queue = Queue()
     handler = QueueHandler(queue)
@@ -176,7 +176,7 @@ def test_logger_thread(glaze_qtbot, logger):
     def assert_text():
         assert model.text == "test\n"
 
-    glaze_qtbot.wait_until(assert_text)
+    gild_qtbot.wait_until(assert_text)
 
 
 def test_rotating_file_handler(tmpdir, logger, monkeypatch):
@@ -259,7 +259,7 @@ def test_rotating_file_handler_dst(tmpdir, logger, monkeypatch):
         return current_time + 0.1
 
     monkeypatch.setattr(DayRotatingTimeHandler, "computeRollover", rollover)
-    from glaze.plugins.log.tools import time
+    from gild.plugins.log.tools import time
 
     monkeypatch.setattr(time, "localtime", Aux.loct)
     handler = DayRotatingTimeHandler(str(tmpdir.join("test.log")))

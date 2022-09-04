@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Copyright 2022 by Glaze Authors, see AUTHORS for more details.
+# Copyright 2022 by Gild Authors, see AUTHORS for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -10,7 +10,7 @@
 """
 import enaml
 
-from glaze.testing.util import set_preferences, wait_for_window_displayed
+from gild.testing.util import set_preferences, wait_for_window_displayed
 
 with enaml.imports():
     from .contributions import (
@@ -27,9 +27,9 @@ def test_lifecyle(app, icon_workbench, caplog):
     icon_workbench.register(ThemeContributor())
     icon_workbench.register(ThemeExtensionContributor())
 
-    pl = icon_workbench.get_plugin("glaze.icons")
-    assert pl.current_theme == "glaze.FontAwesome"
-    assert pl.fallback_theme == "glaze.FontAwesome"
+    pl = icon_workbench.get_plugin("gild.icons")
+    assert pl.current_theme == "gild.FontAwesome"
+    assert pl.fallback_theme == "gild.FontAwesome"
     assert "dummy" in pl.icon_themes
     pl.current_theme = "dummy"
     assert pl.get_icon("dumb1") is not None
@@ -59,7 +59,7 @@ def test_lifecyle(app, icon_workbench, caplog):
     icon_workbench.unregister("dummy.theme_extension2")
     assert pl.get_icon("dumb3") is None
 
-    icon_workbench.unregister("glaze.icons")
+    icon_workbench.unregister("gild.icons")
 
 
 def test_overriding_preferences_if_absent(icon_workbench):
@@ -69,18 +69,18 @@ def test_overriding_preferences_if_absent(icon_workbench):
     """
     set_preferences(
         icon_workbench,
-        {"glaze.icons": {"current_theme": "_d_", "fallback_theme": "_f"}},
+        {"gild.icons": {"current_theme": "_d_", "fallback_theme": "_f"}},
     )
-    pl = icon_workbench.get_plugin("glaze.icons")
+    pl = icon_workbench.get_plugin("gild.icons")
     assert pl.current_theme == pl.icon_themes[0]
-    assert pl.fallback_theme == "glaze.FontAwesome"
+    assert pl.fallback_theme == "gild.FontAwesome"
 
 
 def test_get_icon_handling_errors(icon_workbench, caplog):
     """Test getting an icon and handling all possible errors."""
     icon_workbench.register(ThemeContributor())
     icon_workbench.register(ThemeExtensionContributor())
-    pl = icon_workbench.get_plugin("glaze.icons")
+    pl = icon_workbench.get_plugin("gild.icons")
     pl.current_theme = "dummy"
     pl.fallback_theme = "dummy"
 
@@ -94,21 +94,21 @@ def test_get_icon_handling_errors(icon_workbench, caplog):
     assert "raised" in caplog.text
 
 
-def test_fontawesome(icon_workbench, glaze_qtbot, dialog_sleep):
+def test_fontawesome(icon_workbench, gild_qtbot, dialog_sleep):
     """Test getting and using a FontAwesome icon."""
-    pl = icon_workbench.get_plugin("glaze.icons")
-    pl.current_theme = "glaze.FontAwesome"
+    pl = icon_workbench.get_plugin("gild.icons")
+    pl.current_theme = "gild.FontAwesome"
     assert pl.get_icon("folder-open")
     w = IconWindowTest(btn_icon=pl.get_icon("folder-open"))
     w.show()
-    wait_for_window_displayed(glaze_qtbot, w)
+    wait_for_window_displayed(gild_qtbot, w)
 
 
-def test_elusiveicon(icon_workbench, glaze_qtbot):
+def test_elusiveicon(icon_workbench, gild_qtbot):
     """Test getting and using an ElusiveIcon icon."""
-    pl = icon_workbench.get_plugin("glaze.icons")
-    pl.current_theme = "glaze.ElusiveIcon"
+    pl = icon_workbench.get_plugin("gild.icons")
+    pl.current_theme = "gild.ElusiveIcon"
     assert pl.get_icon("folder-open")
     w = IconWindowTest(btn_icon=pl.get_icon("folder-open"))
     w.show()
-    wait_for_window_displayed(glaze_qtbot, w)
+    wait_for_window_displayed(gild_qtbot, w)

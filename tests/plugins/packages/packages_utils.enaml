@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright 2022 by Glaze Authors, see AUTHORS for more details.
+# Copyright 2022 by Gild Authors, see AUTHORS for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -15,12 +15,12 @@ enamldef Manifest1(PluginManifest):
     """Dummy manifest not declaring a priority.
 
     """
-    id = "glaze.test1"
+    id = "gild.test1"
 
 
 enamldef Manifest2(PluginManifest):
     """Dummy manifest declaring a priority.
 
     """
-    id = "glaze.test2"
+    id = "gild.test2"
     attr priority = 0

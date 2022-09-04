@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright 2022 Glaze Authors, see AUTHORS for more details.
+# Copyright 2022 Gild Authors, see AUTHORS for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -11,7 +11,7 @@
 """
 from pytest import raises
 
-from glaze.utils.container_change import ContainerChange
+from gild.utils.container_change import ContainerChange
 
 
 class TestContainerChange(object):

@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Copyright 2022 by Glaze Authors, see AUTHORS for more details.
+# Copyright 2022 by Gild Authors, see AUTHORS for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -12,20 +12,20 @@ import enaml
 import pytest
 from enaml.widgets.api import MultilineField
 
-from glaze.plugins.errors import ErrorsManifest
-from glaze.plugins.lifecycle import LifecycleManifest
-from glaze.plugins.packages import PackagesManifest
-from glaze.testing.util import get_window, handle_dialog, show_and_close_widget
+from gild.plugins.errors import ErrorsManifest
+from gild.plugins.lifecycle import LifecycleManifest
+from gild.plugins.packages import PackagesManifest
+from gild.testing.util import get_window, handle_dialog, show_and_close_widget
 
 with enaml.imports():
     from enaml.workbench.core.core_manifest import CoreManifest
     from enaml.workbench.ui.ui_manifest import UIManifest
 
-    from glaze.plugins.errors.widgets import HierarchicalErrorsDisplay
+    from gild.plugins.errors.widgets import HierarchicalErrorsDisplay
 
 
-APP_ID = "glaze.lifecycle"
-ERRORS_ID = "glaze.errors"
+APP_ID = "gild.lifecycle"
+ERRORS_ID = "gild.errors"
 
 
 @pytest.fixture
@@ -67,21 +67,21 @@ def test_life_cycle(err_workbench):
     assert not len(plugin.errors)
 
 
-def test_signal_command_with_unknown(err_workbench, glaze_qtbot):
+def test_signal_command_with_unknown(err_workbench, gild_qtbot):
     """Test the signal command with a stupid kind of error."""
     core = err_workbench.get_plugin("enaml.workbench.core")
 
-    with handle_dialog(glaze_qtbot):
-        core.invoke_command("glaze.errors.signal", {"kind": "stupid", "msg": None})
+    with handle_dialog(gild_qtbot):
+        core.invoke_command("gild.errors.signal", {"kind": "stupid", "msg": None})
 
-    with handle_dialog(glaze_qtbot):
+    with handle_dialog(gild_qtbot):
         fail = FailedFormat()
-        core.invoke_command("glaze.errors.signal", {"kind": "stupid", "msg": fail})
+        core.invoke_command("gild.errors.signal", {"kind": "stupid", "msg": fail})
 
     assert getattr(fail, "called", None)
 
 
-def test_handling_error_in_handlers(err_workbench, glaze_qtbot):
+def test_handling_error_in_handlers(err_workbench, gild_qtbot):
     """Test handling an error occuring in a specilaized handler."""
     plugin = err_workbench.get_plugin(ERRORS_ID)
 
@@ -89,41 +89,41 @@ def test_handling_error_in_handlers(err_workbench, glaze_qtbot):
         assert "error" in dial.errors
         assert "registering" not in dial.errors
 
-    with handle_dialog(glaze_qtbot, handler=check_dialog):
+    with handle_dialog(gild_qtbot, handler=check_dialog):
         plugin.signal("registering")
 
-    with handle_dialog(glaze_qtbot, handler=check_dialog):
+    with handle_dialog(gild_qtbot, handler=check_dialog):
         plugin.signal("registering", msg=FailedFormat())
 
 
-def test_gathering_mode(err_workbench, glaze_qtbot):
+def test_gathering_mode(err_workbench, gild_qtbot):
     """Test gathering multiple errors."""
     core = err_workbench.get_plugin("enaml.workbench.core")
-    core.invoke_command("glaze.errors.enter_error_gathering")
+    core.invoke_command("gild.errors.enter_error_gathering")
 
-    core.invoke_command("glaze.errors.signal", {"kind": "stupid", "msg": None})
+    core.invoke_command("gild.errors.signal", {"kind": "stupid", "msg": None})
 
     with pytest.raises(AssertionError):
-        get_window(glaze_qtbot)
+        get_window(gild_qtbot)
 
-    with handle_dialog(glaze_qtbot):
-        core.invoke_command("glaze.errors.exit_error_gathering")
+    with handle_dialog(gild_qtbot):
+        core.invoke_command("gild.errors.exit_error_gathering")
 
 
-def test_report_command(err_workbench, glaze_qtbot):
+def test_report_command(err_workbench, gild_qtbot):
     """Test generating an application errors report."""
     core = err_workbench.get_plugin("enaml.workbench.core")
-    with handle_dialog(glaze_qtbot):
-        core.invoke_command("glaze.errors.report")
+    with handle_dialog(gild_qtbot):
+        core.invoke_command("gild.errors.report")
 
-    with handle_dialog(glaze_qtbot):
-        core.invoke_command("glaze.errors.report", dict(kind="error"))
+    with handle_dialog(gild_qtbot):
+        core.invoke_command("gild.errors.report", dict(kind="error"))
 
-    with handle_dialog(glaze_qtbot):
-        core.invoke_command("glaze.errors.report", dict(kind="stupid"))
+    with handle_dialog(gild_qtbot):
+        core.invoke_command("gild.errors.report", dict(kind="stupid"))
 
 
-def test_install_excepthook(err_workbench, glaze_qtbot):
+def test_install_excepthook(err_workbench, gild_qtbot):
     """Test the installation and use of the sys.excepthook."""
     import sys
 
@@ -132,7 +132,7 @@ def test_install_excepthook(err_workbench, glaze_qtbot):
     err_workbench.register(UIManifest())
     err_workbench.register(LifecycleManifest())
     core = err_workbench.get_plugin("enaml.workbench.core")
-    core.invoke_command("glaze.errors.install_excepthook")
+    core.invoke_command("gild.errors.install_excepthook")
 
     new_hook = sys.excepthook
     sys.excepthook = old_hook
@@ -142,7 +142,7 @@ def test_install_excepthook(err_workbench, glaze_qtbot):
     try:
         raise Exception()
     except Exception:
-        with handle_dialog(glaze_qtbot):
+        with handle_dialog(gild_qtbot):
             new_hook(*sys.exc_info())
 
 
@@ -153,7 +153,7 @@ def test_install_excepthook(err_workbench, glaze_qtbot):
 
 def test_reporting_single_error(err_workbench):
     """Check handling a single error."""
-    plugin = err_workbench.get_plugin("glaze.errors")
+    plugin = err_workbench.get_plugin("gild.errors")
     handler = plugin._errors_handlers.contributions["error"]
 
     assert handler.handle(err_workbench, {"message": "test"})
@@ -163,7 +163,7 @@ def test_reporting_single_error(err_workbench):
 
 def test_reporting_multiple_errors(err_workbench):
     """Check handling multiple errors."""
-    plugin = err_workbench.get_plugin("glaze.errors")
+    plugin = err_workbench.get_plugin("gild.errors")
     handler = plugin._errors_handlers.contributions["error"]
 
     assert handler.handle(err_workbench, [{"message": "test"}])
@@ -178,7 +178,7 @@ def test_reporting_multiple_errors(err_workbench):
 
 def test_reporting_single_registering_error(err_workbench):
     """Check handling a single registering error."""
-    plugin = err_workbench.get_plugin("glaze.errors")
+    plugin = err_workbench.get_plugin("gild.errors")
     handler = plugin._errors_handlers.contributions["registering"]
 
     assert handler.handle(err_workbench, {"id": "test", "message": "test"})
@@ -189,7 +189,7 @@ def test_reporting_single_registering_error(err_workbench):
 
 def test_reporting_multiple_registering_errors(err_workbench):
     """Check handling multiple package errors."""
-    plugin = err_workbench.get_plugin("glaze.errors")
+    plugin = err_workbench.get_plugin("gild.errors")
     handler = plugin._errors_handlers.contributions["registering"]
 
     assert handler.handle(err_workbench, [{"id": "test", "message": "test"}])
@@ -205,7 +205,7 @@ def test_reporting_multiple_registering_errors(err_workbench):
 
 def test_handling_single_extension_error(err_workbench):
     """Check handling a single extension error."""
-    plugin = err_workbench.get_plugin("glaze.errors")
+    plugin = err_workbench.get_plugin("gild.errors")
     handler = plugin._errors_handlers.contributions["extensions"]
 
     assert handler.handle(err_workbench, {"point": "test", "errors": {}})
@@ -216,7 +216,7 @@ def test_handling_single_extension_error(err_workbench):
 
 def test_handling_multiple_extension_errors(err_workbench):
     """Check handling multiple extension errors."""
-    plugin = err_workbench.get_plugin("glaze.errors")
+    plugin = err_workbench.get_plugin("gild.errors")
     handler = plugin._errors_handlers.contributions["extensions"]
 
     assert handler.handle(err_workbench, [{"point": "test", "errors": {}}])
@@ -225,17 +225,17 @@ def test_handling_multiple_extension_errors(err_workbench):
         handler.handle(err_workbench, {})
 
 
-def test_reporting_on_extension_errors(glaze_qtbot, err_workbench):
+def test_reporting_on_extension_errors(gild_qtbot, err_workbench):
     """Check reporting extension errors."""
-    plugin = err_workbench.get_plugin("glaze.errors")
+    plugin = err_workbench.get_plugin("gild.errors")
     handler = plugin._errors_handlers.contributions["extensions"]
 
     widget = handler.report(err_workbench)
     assert isinstance(widget, MultilineField)
-    show_and_close_widget(glaze_qtbot, widget)
+    show_and_close_widget(gild_qtbot, widget)
 
     handler.errors = {"test": {"errror": "msg"}}
 
     widget = handler.report(err_workbench)
     assert isinstance(widget, HierarchicalErrorsDisplay)
-    show_and_close_widget(glaze_qtbot, widget)
+    show_and_close_widget(gild_qtbot, widget)

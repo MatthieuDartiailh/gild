@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright 2022 by Glaze Authors, see AUTHORS for more details.
+# Copyright 2022 by Gild Authors, see AUTHORS for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -12,7 +12,7 @@
 from atom.api import Atom, Str
 from enaml.workbench.api import PluginManifest, Plugin, Extension
 
-from glaze.plugins.states.state import State
+from gild.plugins.states.state import State
 
 
 class _State(Plugin):
@@ -31,7 +31,7 @@ enamldef StateContributor(PluginManifest):
 
     Extension:
         id = "state"
-        point = "glaze.states.state"
+        point = "gild.states.state"
         State:
             id = "test.states.state"
             sync_members = ["string"]

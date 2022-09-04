@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright 2022 Glaze Authors, see AUTHORS for more details.
+# Copyright 2022 Gild Authors, see AUTHORS for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -11,7 +11,7 @@
 """
 from enaml.widgets.api import Window
 
-from glaze.utils.enaml_destroy_hook import add_destroy_hook
+from gild.utils.enaml_destroy_hook import add_destroy_hook
 
 
 def test_destroy_hook():

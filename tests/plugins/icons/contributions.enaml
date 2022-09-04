@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright 2022 by Glaze Authors, see AUTHORS for more details.
+# Copyright 2022 by Gild Authors, see AUTHORS for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -14,7 +14,7 @@ from enaml.widgets.api import Window, Container, PushButton
 from atom.api import Str
 
 from enaml.workbench.api import Extension, PluginManifest
-from glaze.plugins.icons.icon_theme import IconTheme, IconThemeExtension, Icon
+from gild.plugins.icons.icon_theme import IconTheme, IconThemeExtension, Icon
 
 
 class DumbIcon(enaml.icon.Icon):
@@ -59,7 +59,7 @@ enamldef ThemeContributor(PluginManifest):
 
     Extension:
         id = "icon_theme"
-        point = "glaze.icons.icon_theme"
+        point = "gild.icons.icon_theme"
         DummyTheme:
             pass
 
@@ -72,7 +72,7 @@ enamldef ThemeContributor2(PluginManifest):
 
     Extension:
         id = "icon_theme"
-        point = "glaze.icons.icon_theme"
+        point = "gild.icons.icon_theme"
         DummyTheme:
             id = "dummy2"
 
@@ -85,7 +85,7 @@ enamldef ThemeExtensionContributor(PluginManifest):
 
     Extension:
         id = "theme_extension"
-        point = "glaze.icons.icon_theme_extension"
+        point = "gild.icons.icon_theme_extension"
         DummyThemeExtension:
             pass
 
@@ -98,7 +98,7 @@ enamldef ThemeExtensionContributor2(PluginManifest):
 
     Extension:
         id = "theme_extension"
-        point = "glaze.icons.icon_theme_extension"
+        point = "gild.icons.icon_theme_extension"
         IconThemeExtension:
             id = "dummy_ext2"
             theme = "dummy"

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright 2022 by Glaze Authors, see AUTHORS for more details.
+# Copyright 2022 by Gild Authors, see AUTHORS for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -13,8 +13,8 @@ import enaml
 from enaml.widgets.window import CloseEvent
 from enaml.workbench.api import Workbench
 
-from glaze.plugins.errors import ErrorsManifest
-from glaze.plugins.lifecycle import LifecycleManifest
+from gild.plugins.errors import ErrorsManifest
+from gild.plugins.lifecycle import LifecycleManifest
 
 with enaml.imports():
     from enaml.workbench.core.core_manifest import CoreManifest
@@ -50,7 +50,7 @@ class TestAppPlugin(object):
         """Test running startups leading to new startup registrations."""
         manifest = StartupContributor()
         self.workbench.register(manifest)
-        plugin = self.workbench.get_plugin("glaze.lifecycle")
+        plugin = self.workbench.get_plugin("gild.lifecycle")
         plugin.run_app_startup(object())
 
         assert manifest.called == [
@@ -58,7 +58,7 @@ class TestAppPlugin(object):
             "test.startup2",
             "test_nested.startup2",
         ]
-        self.workbench.unregister("glaze.lifecycle")
+        self.workbench.unregister("gild.lifecycle")
 
     def test_closing(self):
         """Test that validation stops as soon as the event is rejected."""
@@ -69,7 +69,7 @@ class TestAppPlugin(object):
 
         window = FalseWindow(self.workbench)
 
-        plugin = self.workbench.get_plugin("glaze.lifecycle")
+        plugin = self.workbench.get_plugin("gild.lifecycle")
         ev = CloseEvent()
         plugin.validate_closing(window, ev)
 
@@ -88,7 +88,7 @@ class TestAppPlugin(object):
         """Test running the app cleanup."""
         manifest = ClosedContributor()
         self.workbench.register(manifest)
-        plugin = self.workbench.get_plugin("glaze.lifecycle")
+        plugin = self.workbench.get_plugin("gild.lifecycle")
         plugin.run_app_cleanup()
 
         assert manifest.called == [
@@ -102,7 +102,7 @@ class TestAppPlugin(object):
         manifest = StartupContributor()
         self.workbench.register(manifest)
 
-        plugin = self.workbench.get_plugin("glaze.lifecycle")
+        plugin = self.workbench.get_plugin("gild.lifecycle")
         assert len(plugin.startup.contributions) == 2
         assert len(plugin._start_heap) == 2
 
@@ -116,7 +116,7 @@ class TestAppPlugin(object):
         manifest = ClosingContributor1()
         self.workbench.register(manifest)
 
-        plugin = self.workbench.get_plugin("glaze.lifecycle")
+        plugin = self.workbench.get_plugin("gild.lifecycle")
         assert len(plugin.closing.contributions) == 1
 
         self.workbench.unregister(manifest.id)
@@ -128,7 +128,7 @@ class TestAppPlugin(object):
         manifest = ClosedContributor()
         self.workbench.register(manifest)
 
-        plugin = self.workbench.get_plugin("glaze.lifecycle")
+        plugin = self.workbench.get_plugin("gild.lifecycle")
         assert len(plugin.closed.contributions) == 2
         assert len(plugin._clean_heap) == 2
 

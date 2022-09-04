@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright 2022 Glaze Authors, see AUTHORS for more details.
+# Copyright 2022 Gild Authors, see AUTHORS for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -14,7 +14,7 @@ from collections import OrderedDict
 import pytest
 from atom.api import Constant, Enum, Float, Int, List, Str, Typed, Value
 
-from glaze.utils.atom_util import (
+from gild.utils.atom_util import (
     HasPrefAtom,
     member_from_pref,
     member_to_pref,

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright 2022 Glaze Authors, see AUTHORS for more details.
+# Copyright 2022 Gild Authors, see AUTHORS for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -15,7 +15,7 @@ import pytest
 from atom.api import Bool
 from enaml.core.api import Declarative
 
-from glaze.utils.declarator import Declarator, GroupDeclarator, import_and_get
+from gild.utils.declarator import Declarator, GroupDeclarator, import_and_get
 
 
 class DummyDeclarator(Declarator):
@@ -111,7 +111,7 @@ def test_group_registering3(declarators):
 
 def test_import_and_get():
     """Test the behavior of the import and get utility function."""
-    assert import_and_get("glaze.utils.declarator", "Declarator", {}, "") is Declarator
+    assert import_and_get("gild.utils.declarator", "Declarator", {}, "") is Declarator
 
     tb = {}
     import_and_get("___exopy", "r", tb, "test")
@@ -120,8 +120,8 @@ def test_import_and_get():
     else:
         assert "ModuleNotFoundError" in tb["test"]
 
-    import_and_get("glaze.testing.broken_enaml", "r", tb, "test")
+    import_and_get("gild.testing.broken_enaml", "r", tb, "test")
     assert "AttributeError" in tb["test"] or "NameError" in tb["test"]
 
-    import_and_get("glaze.utils.declarator", "___D", tb, "test")
+    import_and_get("gild.utils.declarator", "___D", tb, "test")
     assert "AttributeError" in tb["test"]

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright 2022 by Glaze Authors, see AUTHORS for more details.
+# Copyright 2022 by Gild Authors, see AUTHORS for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -13,8 +13,8 @@ import enaml
 import pytest
 from enaml.workbench.workbench import Workbench
 
-from glaze.plugins.errors import ErrorsManifest
-from glaze.plugins.lifecycle import LifecycleManifest
+from gild.plugins.errors import ErrorsManifest
+from gild.plugins.lifecycle import LifecycleManifest
 
 with enaml.imports():
     from enaml.workbench.core.core_manifest import CoreManifest
@@ -24,7 +24,7 @@ with enaml.imports():
 
 
 @pytest.fixture
-def workbench_and_tools(glaze_qtbot):
+def workbench_and_tools(gild_qtbot):
     """Create a workbench to test closing of the application window."""
     workbench = Workbench()
     workbench.register(CoreManifest())
@@ -39,7 +39,7 @@ def workbench_and_tools(glaze_qtbot):
     return workbench, closing, closed
 
 
-def test_app_window(glaze_qtbot, workbench_and_tools):
+def test_app_window(gild_qtbot, workbench_and_tools):
     """Test that closing and closed handlers are called when trying to close
     the app window.
 
@@ -54,7 +54,7 @@ def test_app_window(glaze_qtbot, workbench_and_tools):
     def assert_closing_called():
         assert closing.called
 
-    glaze_qtbot.wait_until(assert_closing_called)
+    gild_qtbot.wait_until(assert_closing_called)
     assert ui.window.visible
 
     closing.accept = True
@@ -63,5 +63,5 @@ def test_app_window(glaze_qtbot, workbench_and_tools):
     def assert_closed_called():
         assert closed.called
 
-    glaze_qtbot.wait_until(assert_closed_called)
+    gild_qtbot.wait_until(assert_closed_called)
     assert not ui.window.visible

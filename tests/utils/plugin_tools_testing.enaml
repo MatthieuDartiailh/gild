@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright 2022 Glaze Authors, see AUTHORS for more details.
+# Copyright 2022 Gild Authors, see AUTHORS for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -14,8 +14,8 @@ from enaml.workbench.api import (PluginManifest, Plugin, Extension,
                                  ExtensionPoint)
 from  enaml.core.api import Declarative, d_, d_func
 
-from glaze.utils.declarator import Declarator
-from glaze.utils.plugin_tools import ExtensionsCollector, DeclaratorCollector
+from gild.utils.declarator import Declarator
+from gild.utils.plugin_tools import ExtensionsCollector, DeclaratorCollector
 
 
 POINT = 'test.contrib'

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright 2022 by Glaze Authors, see AUTHORS for more details.
+# Copyright 2022 by Gild Authors, see AUTHORS for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -12,8 +12,8 @@
 import enaml
 import pytest
 
-from glaze.plugins.icons import IconManagerManifest
-from glaze.plugins.preferences import PreferencesManifest
+from gild.plugins.icons import IconManagerManifest
+from gild.plugins.preferences import PreferencesManifest
 
 with enaml.imports():
     from enaml.workbench.core.core_manifest import CoreManifest
@@ -28,7 +28,7 @@ def icon_workbench(workbench, app_name, app_dir):
 
     yield workbench
 
-    for m_id in ("glaze.icons", "glaze.preferences"):
+    for m_id in ("gild.icons", "gild.preferences"):
         try:
             workbench.unregister(m_id)
         except Exception:

@@ -1,5 +1,5 @@
 [project]
-name = "glaze"
+name = "gild"
 description = "App building plugins for Enaml based plugin applications"
 readme = "README.rst"
 requires-python = ">=3.9"
@@ -32,10 +32,10 @@ qt6-pyqt = ["enaml[qt6-pyqt]"]
 qt6-pyside = ["enaml[qt6-pyside]"]
 
 [project.urls]
-homepage = "https://github.com/MatthieuDartiailh/glaze"
-documentation = "https://glaze.readthedocs.io/en/latest/"
-repository = "https://github.com/MatthieuDartiailh/glaze"
-changelog = "https://github.com/MatthieuDartiailh/glaze/blob/main/doc/changelog.rst"
+homepage = "https://github.com/MatthieuDartiailh/gild"
+documentation = "https://gild.readthedocs.io/en/latest/"
+repository = "https://github.com/MatthieuDartiailh/gild"
+changelog = "https://github.com/MatthieuDartiailh/gild/blob/main/doc/changelog.rst"
 
 [build-system]
 requires = ["setuptools>=64", "wheel", "setuptools_scm[toml]>=3.4.3"]
