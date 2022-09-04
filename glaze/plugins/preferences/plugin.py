@@ -9,6 +9,7 @@
 
 """
 import os
+import pathlib
 from collections import OrderedDict
 from functools import partial
 from typing import Any, Mapping, Optional
@@ -27,7 +28,7 @@ PREFS_POINT = "glaze.preferences.plugin"
 class PrefPlugin(Plugin):
     """Plugin responsible for managing the application preferences."""
 
-    #: Folder used by the application to store informations such as preferences
+    #: Folder used by the application to store information such as preferences
     #: log files, ...
     app_directory = Str()
 
@@ -38,10 +39,8 @@ class PrefPlugin(Plugin):
         """Start the plugin, locate app folder and load default preferences."""
         # Look for the app specific storage under the user to locate the application
         # folder that may be stored somewhere else.
-        storage_path = os.path.join(
-            os.path.expanduser("~"), "." + self.manifest.application_name
-        )
-        if os.path.isfile(storage_path):
+        storage_path = pathlib.Path.home() / f".{self.manifest.application_name}"
+        if storage_path.is_file():
             self.app_directory = app_path = toml.load(storage_path)["app_path"]
         else:
             raise RuntimeError(
@@ -50,6 +49,7 @@ class PrefPlugin(Plugin):
                 "ensure that the preference plugin startup sequence runs before "
                 "starting the plugin."
             )
+
         self.app_directory = app_path
         self._prefs = OrderedDict()
 
@@ -57,7 +57,8 @@ class PrefPlugin(Plugin):
         if not os.path.isdir(pref_path):
             os.mkdir(pref_path)
 
-        default_pref_path = os.path.join(pref_path, "default.ini")
+        default_pref_path = os.path.join(pref_path, "default.toml")
+        self._last_saved_pref_file = default_pref_path
         if os.path.isfile(default_pref_path):
             self._prefs = toml.load(default_pref_path, OrderedDict)
 
@@ -91,6 +92,7 @@ class PrefPlugin(Plugin):
             save_method = getattr(plugin, decl.saving_method)
             prefs[plugin_id] = save_method()
 
+        self._last_saved_pref_file = str(path)
         with open(path, "w", encoding="utf-8") as f:
             toml.dump(prefs, f)
 
@@ -111,9 +113,8 @@ class PrefPlugin(Plugin):
             return
 
         prefs = toml.load(path, OrderedDict)
-        self._prefs.merge(
-            prefs
-        )  # FIXME need a custom way to merge dict (move from errors to some utils)
+        self._prefs |= prefs
+        # FIXME need a custom way to merge dict (move from errors to some utils)
         for plugin_id in prefs:
             if plugin_id in self._pref_decls.contributions:
                 plugin = self.workbench.get_plugin(plugin_id, force_create=False)
@@ -139,7 +140,7 @@ class PrefPlugin(Plugin):
         pref_decl = self._pref_decls.contributions[plugin_id]
         for member in pref_decl.auto_save:
             # Custom observer which does not rely on the fact that the object
-            # in the change dictionnary is a plugin
+            # in the change dictionary is a plugin
             observer = partial(self._auto_save_update, plugin_id)
             plugin.observe(member, observer)
 
@@ -158,7 +159,6 @@ class PrefPlugin(Plugin):
 
         """
         if plugin_id not in self._pref_decls.contributions:
-            print(self._pref_decls.contributions)
             msg = "Plugin %s is not registered in the preferences system"
             raise KeyError(msg % plugin_id)
 
@@ -176,6 +176,9 @@ class PrefPlugin(Plugin):
     # =========================================================================
     # ---- Private API --------------------------------------------------------
     # =========================================================================
+
+    #: Path to the last used preference file
+    _last_saved_pref_file = Str()
 
     #: Ordered dict in which the preferences are stored
     _prefs = Typed(OrderedDict)
@@ -202,4 +205,5 @@ class PrefPlugin(Plugin):
         else:
             self._prefs[plugin_id] = {name: value}
 
-        self._prefs.write()
+        with open(self._last_saved_pref_file, "w") as f:
+            toml.dump(self._prefs, f)

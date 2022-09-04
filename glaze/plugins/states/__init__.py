@@ -8,6 +8,11 @@
 """State sharing between plugin (pendant of command plugin).
 
 """
+import enaml
+
 from .state import State
 
-__all__ = ["State"]
+with enaml.imports():
+    from .manifest import StateManifest
+
+__all__ = ["State", "StateManifest"]

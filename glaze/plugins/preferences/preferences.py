@@ -8,23 +8,24 @@
 """Declarative class for defining hnadling of preferences.
 
 """
-from atom.api import List, Str
+from sqlite3 import paramstyle
+
+from atom.api import List, Property, Str
 from enaml.core.api import Declarative, d_, d_func
 from enaml.widgets.container import Container
-from enaml.workbench.api import Workbench
+from enaml.workbench.api import PluginManifest, Workbench
 
 
 class Preferences(Declarative):
     """Declarative class for defining a workbench preference contribution.
 
-    Preferences object can be contributed as extensions child to the 'plugin'
+    Preferences object can be contributed as extensions child to the "plugin"
     extension point of a preference plugin.
 
     """
 
     #: Id of the contribution. This MUST match the declaring plugin.
-    # FIXME make this self-generated or something
-    id = d_(Str())
+    id = d_(Property(), writable=False, final=True)
 
     #: Short description of what is expected to be saved.
     description = d_(Str())
@@ -65,3 +66,11 @@ class Preferences(Declarative):
 
         """
         pass
+
+    # --- Private API
+
+    def _get_id(self) -> str:
+        parent = self.parent
+        while not isinstance(parent, PluginManifest):
+            parent = parent.parent
+        return parent.id

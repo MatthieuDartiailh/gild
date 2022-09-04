@@ -33,8 +33,8 @@ from .tree_nodes import TreeNode
 
 def pixmap_cache(name, path=None):
     """Return the QPixmap corresponding to a filename. If the filename does
-    not contain a path component, 'path' is used (or if 'path' is not
-    specified, the local 'images' directory is used).
+    not contain a path component, "path" is used (or if "path" is not
+    specified, the local "images" directory is used).
 
     """
     name_path, name = os.path.split(name)
@@ -106,7 +106,7 @@ class QtTreeWidget(RawWidget):
     _map = Dict()
 
     # PySide requires weakrefs for using bound methods as slots.
-    # PyQt doesn't, but executes unsafe code if not using weakrefs.
+    # PyQt doesn"t, but executes unsafe code if not using weakrefs.
     __slots__ = "__weakref__"
 
     # =========================================================================
@@ -368,7 +368,7 @@ class QtTreeWidget(RawWidget):
         """Expands the contents of a specified node (if required)."""
         expanded, node, obj = self._get_node_data(nid)
 
-        # Lazily populate the item's children:
+        # Lazily populate the item"s children:
         if not expanded:
             # Remove any dummy node.
             dummy = getattr(nid, "_dummy", None)
@@ -405,7 +405,7 @@ class QtTreeWidget(RawWidget):
                 _, pnode, pobject = self._get_node_data(pnid)
                 return (pnode, pobject, i)
 
-        # doesn't match any node, so return None
+        # doesn"t match any node, so return None
         return (None, None, None)
 
     def _has_children(self, node, obj):
@@ -493,7 +493,7 @@ class QtTreeWidget(RawWidget):
 
         # Select all nodes which understand this object:
         nodes = [node for node in self.nodes if node.is_node_for(obj)]
-        # If only one found, we're done, return it:
+        # If only one found, we"re done, return it:
         if len(nodes) == 1:
             return (obj, nodes[0])
 
@@ -529,12 +529,12 @@ class QtTreeWidget(RawWidget):
 
     @staticmethod
     def _get_node_data(nid):
-        """Gets the node specific data. """
+        """Gets the node specific data."""
         return nid._py_data
 
     @staticmethod
     def _set_node_data(nid, data):
-        """Sets the node specific data. """
+        """Sets the node specific data."""
         nid._py_data = data
 
     # =========================================================================
@@ -569,7 +569,7 @@ class QtTreeWidget(RawWidget):
         """Handles a tree node being expanded."""
         expanded, node, obj = self._get_node_data(nid)
 
-        # If 'auto_close' requested for this node type, close all of the node's
+        # If "auto_close" requested for this node type, close all of the node"s
         # siblings:
         if node.can_auto_close(obj):
             parent = nid.parent()
@@ -682,7 +682,7 @@ class QtTreeWidget(RawWidget):
 
         can_rename = can_rename and node.can_rename_me(obj)
 
-        # Set the widget item's editable flag appropriately.
+        # Set the widget item"s editable flag appropriately.
         nid = self._get_object_nid(obj)
         flags = nid.flags()
         if can_rename:
@@ -753,7 +753,7 @@ class QtTreeWidget(RawWidget):
 
         Parameters
         ----------
-        change : exopy.utils.container_change.ContainerChange
+        change : glaze.utils.container_change.ContainerChange
             Describes the modification that occured on the children of the
             observed node.
 
@@ -862,7 +862,7 @@ class QtTreeWidget(RawWidget):
 
 class _TreeWidget(QtWidgets.QTreeWidget):
     """The _TreeWidget class is a specialised QTreeWidget that reimplements
-    the drag'n'drop support so that it hooks into the provided support.
+    the drag"n"drop support so that it hooks into the provided support.
 
     """
 
@@ -879,7 +879,7 @@ class _TreeWidget(QtWidgets.QTreeWidget):
         self._controller = None
 
     def resizeEvent(self, event):
-        """ Overridden to emit sizeHintChanged() of items for word wrapping """
+        """Overridden to emit sizeHintChanged() of items for word wrapping"""
         super(self.__class__, self).resizeEvent(event)
 
     def startDrag(self, actions):
@@ -1058,7 +1058,7 @@ class _TreeWidget(QtWidgets.QTreeWidget):
             # get parent of node being dropped on
             to_node, to_object, to_index = control._node_index(nid)
             if to_node is None:
-                # no parent, can't do anything
+                # no parent, can"t do anything
                 action = None
             elif control._is_droppable(to_node, to_object, data, True):
                 if to_object is control.get_parent(data):
@@ -1072,7 +1072,7 @@ class _TreeWidget(QtWidgets.QTreeWidget):
                 # append to the parent of the node being dropped on
                 action = "append"
             else:
-                # parent can't be modified, can't do anything
+                # parent can"t be modified, can"t do anything
                 action = None
 
         return (action, to_node, to_object, to_index, data)

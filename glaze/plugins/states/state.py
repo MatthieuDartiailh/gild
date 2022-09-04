@@ -15,7 +15,7 @@ from enaml.core.api import Declarative, d_
 class State(Declarative):
     """Declarative class for defining a workbench state.
 
-    State objects can be contributed as extensions child to the 'states'
+    State objects can be contributed as extensions child to the "states"
     extension point of a state plugin.
 
     """

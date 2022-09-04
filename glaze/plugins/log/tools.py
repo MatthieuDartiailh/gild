@@ -48,7 +48,7 @@ class StreamToLogRedirector(object):
     ----------
     logger : logging.Logger
         Instance of a loger object returned by a call to logging.getLogger
-    stream_type : {'stdout', 'stderr'}, optionnal
+    stream_type : {"stdout", "stderr"}, optionnal
         Type of stream being redirected. Stderr stream are logged as CRITICAL
 
     Attributes
@@ -169,7 +169,7 @@ ERR_MESS = "An error occured please check the log file for more details."
 class GuiHandler(logging.Handler):
     """Logger sending the log message to an object which can be linked to a GUI.
 
-    Errors are silently ignored to avoid possible recursions and that's why
+    Errors are silently ignored to avoid possible recursions and that"s why
     this handler should be coupled to another, safer one.
 
     Parameters

@@ -75,7 +75,7 @@ class PyMimeData(QtCore.QMimeData):
 
         if isinstance(md, PyMimeData):
             # If it is a PyMimeData, migrate all its data, subclasses should
-            # override this method if it doesn't do things correctly for them
+            # override this method if it doesn"t do things correctly for them
             data = md.instance()
             nmd = cls()
             nmd._local_instance = data
@@ -89,7 +89,7 @@ class PyMimeData(QtCore.QMimeData):
                 nmd.setData(format, md.data(format))
 
         else:
-            # By default, don't try to pickle the coerced object
+            # By default, don"t try to pickle the coerced object
             pickle = False
 
             # See if the data is a list, if so check for any items which are

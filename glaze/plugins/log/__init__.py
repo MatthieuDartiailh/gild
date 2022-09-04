@@ -10,3 +10,9 @@
 This plugin offers the possibility to add custom handlers, filters and formatters.
 
 """
+import enaml
+
+with enaml.imports():
+    from .manifest import LogManifest
+
+__all__ = ["LogManifest"]

@@ -8,3 +8,7 @@
 """ Plugin handling loading extension packages at startup.
 
 """
+import enaml
+
+with enaml.imports():
+    from .manifest import PackagesManifest

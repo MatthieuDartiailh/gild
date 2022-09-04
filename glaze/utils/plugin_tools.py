@@ -9,9 +9,7 @@
 
 """
 from collections import defaultdict
-from typing import Any
-from typing import Callable as TypedCallable
-from typing import Iterable, Mapping, Tuple, Union
+from typing import Any, Callable as TypedCallable, Iterable, Mapping, Tuple, Union
 
 from atom.api import Atom, Callable, Coerced, Dict, List, Str, Typed
 from enaml.workbench.api import Extension, Plugin, Workbench
@@ -104,8 +102,8 @@ def make_extension_validator(
             func = getattr(member, "__func__", None)
             o_func = getattr(base_cls, name)
             if not func or func is o_func:
-                msg = "%s '%s' does not declare a %s function"
-                return False, msg % (base_cls, contrib.id, name)
+                msg = f"{base_cls} '{contrib.id}' does not declare a {name} function."
+                return False, msg
 
         for attr in attributes:
             if not getattr(contrib, attr):

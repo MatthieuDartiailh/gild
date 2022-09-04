@@ -1,0 +1,37 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Copyright 2022 by Glaze Authors, see AUTHORS for more details.
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# -----------------------------------------------------------------------------
+"""Dummy plugin to test the state plugin.
+
+"""
+from atom.api import Atom, Str
+from enaml.workbench.api import PluginManifest, Plugin, Extension
+
+from glaze.plugins.states.state import State
+
+
+class _State(Plugin):
+    """Dummy plugin having a string member.
+
+    """
+    string = Str("init")
+
+
+enamldef StateContributor(PluginManifest):
+    """Plugin contributing a state object.
+
+    """
+    id = "test.states"
+    factory = _State
+
+    Extension:
+        id = "state"
+        point = "glaze.states.state"
+        State:
+            id = "test.states.state"
+            sync_members = ["string"]

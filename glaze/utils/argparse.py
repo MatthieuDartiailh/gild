@@ -28,7 +28,7 @@ class ArgParser(Atom):
     #: Name of the application
     app_name = Str()
 
-    #: Mappping between a name passed to the 'choices' arguments of add
+    #: Mappping between a name passed to the "choices" arguments of add
     #: add_argument to allow to modify the choices after adding the argument.
     choices = Dict()
 

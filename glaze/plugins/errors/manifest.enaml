@@ -10,7 +10,8 @@
 """
 import logging
 from pprint import pformat
-from collections import defaultdict, Mapping
+from collections import defaultdict
+from collections.abc import Mapping
 from typing import MutableMapping, TYPE_CHECKING
 
 from enaml.core.api import Conditional
@@ -149,11 +150,8 @@ enamldef ErrorsManifest(PluginManifest):
     id = PLUGIN_ID
     factory = errors_plugin_factory
 
-    #: Should a menu action be added to show error reports
-    attr should_add_menu: bool = True
-
-    #: Path for the menu action
-    attr menu_path: str = "tools/errors"
+    #: Path for the menu action, no menu will be added if this is left empty.
+    attr menu_path: str
 
     # ==================================================================================
     # --- Extension points -------------------------------------------------------------
@@ -190,13 +188,15 @@ enamldef ErrorsManifest(PluginManifest):
             description = INSTALL_EXCEPTHOOK_DESCRIPTION
             handler = make_handler(PLUGIN_ID, "install_excepthook")
 
-    Extension:
-        id = "menus"
-        point = "enaml.workbench.ui.actions"
-        ActionItem:
-            path = menu_path
-            label = "Show errors report"
-            command = "glaze.errors.report"
+    Conditional:
+        condition = bool(menu_path)
+        Extension:
+            id = "menus"
+            point = "enaml.workbench.ui.actions"
+            ActionItem:
+                path = menu_path
+                label = "Show errors report"
+                command = "glaze.errors.report"
 
     Extension:
         id = "state"

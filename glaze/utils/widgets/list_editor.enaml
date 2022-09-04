@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Copyright 2015-2018 by Exopy Authors, see AUTHORS for more details.
+# Copyright 2022 by Glaze Authors, see AUTHORS for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -34,51 +34,51 @@ enamldef PopupListMenu(Menu):
 
     #: Dict mapping operation to function to use to perform it.
     #: Possible entries are:
-    #: - 'add' : function to add an entry, receive index and 'before'/'after'
-    #: - 'remove' : function to remove an entry, receive the index and new pos.
-    #: - 'move' : function move an element receive the index and the new index.
+    #: - "add" : function to add an entry, receive index and "before"/"after"
+    #: - "remove" : function to remove an entry, receive the index and new pos.
+    #: - "move" : function move an element receive the index and the new index.
     attr operations : dict
 
     Action:
-        visible = 'add' in operations
-        text = 'Add before'
+        visible = "add" in operations
+        text = "Add before"
         triggered ::
-            operations['add'](index, 'before')
+            operations["add"](index, "before")
     Action:
-        visible = 'add' in operations
-        text = 'Add after'
+        visible = "add" in operations
+        text = "Add after"
         triggered ::
-            operations['add'](index, 'after')
+            operations["add"](index, "after")
     Action:
         separator = True
 
     Action:
-        visible = 'remove' in operations
-        text = 'Delete'
-        triggered :: operations['remove'](index)
+        visible = "remove" in operations
+        text = "Delete"
+        triggered :: operations["remove"](index)
     Action:
         separator = True
 
     Action:
-        visible = 'move' in operations and index != 0
-        text = 'Move to top'
+        visible = "move" in operations and index != 0
+        text = "Move to top"
         triggered ::
-            operations['move'](index, 0)
+            operations["move"](index, 0)
     Action:
-        visible = 'move' in operations and index != 0
-        text = 'Move up'
+        visible = "move" in operations and index != 0
+        text = "Move up"
         triggered ::
-            operations['move'](index, index - 1)
+            operations["move"](index, index - 1)
     Action:
-        visible = 'move' in operations and index != len(model)-1
-        text = 'Move down'
+        visible = "move" in operations and index != len(model)-1
+        text = "Move down"
         triggered ::
-            operations['move'](index, index + 1)
+            operations["move"](index, index + 1)
     Action:
-        visible = 'move' in operations and index != len(model)-1
-        text = 'Move to bottom'
+        visible = "move" in operations and index != len(model)-1
+        text = "Move to bottom"
         triggered ::
-            operations['move'](index, len(model))
+            operations["move"](index, len(model))
 
 class ListContainer(Container):
     """Custom container handling the layout for the list editor.
@@ -89,7 +89,7 @@ class ListContainer(Container):
 
     """
     #: Aligmenent of the PushButton used to edit the list content.
-    alignment = d_(Str('top'))
+    alignment = d_(Str("top"))
 
     def layout_constraints(self):
         """Layout the push buttons used to edit the list content.
@@ -128,12 +128,12 @@ template ListEditor(Content):
         set only once.
 
     operations : dict
-        Dictionary mapping operation type ('add', 'remove', 'move') to callable
+        Dictionary mapping operation type ("add", "remove", "move") to callable
         performing the operation. Those callables are responsible for signaling
         that the list was modified. The functions signatures are described in
         `PopupListMenu`.
 
-    alignment : {'top', 'v_center', 'bottom'}
+    alignment : {"top", "v_center", "bottom"}
         Alignment of the pushbutton used to edit each item of the list.
 
     """
@@ -142,7 +142,7 @@ template ListEditor(Content):
         attr iterable_name
         attr signal_name
         attr operations : dict
-        attr alignment = 'top'
+        attr alignment = "top"
 
         attr _internal : list = getattr(model, iterable_name)[:]
         func _update_internal(change):
@@ -164,11 +164,11 @@ template ListEditor(Content):
         padding = 0
         Conditional:
             condition << (not bool(_internal) and bool(operations) and
-                          'add' in operations)
+                          "add" in operations)
             PushButton:
-                text = 'Add first element'
+                text = "Add first element"
                 clicked ::
-                    operations['add'](0, 'before')
+                    operations["add"](0, "before")
 
         Conditional:
             condition << not bool(_internal)
@@ -188,8 +188,8 @@ template ListEditor(Content):
                         iterable << _internal
                         PushButton:
                             constraints = [width == 15, height == 20]
-                            font = 'bold 12pt Consolas'
-                            text = '>'
+                            font = "bold 12pt Consolas"
+                            text = ">"
                             clicked ::
                                 # We cannot rely on the loop_index as moved
                                 # event alter the layout but not the item

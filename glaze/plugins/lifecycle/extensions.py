@@ -19,8 +19,8 @@ from enaml.workbench.api import Workbench
 class AppStartup(Declarative):
     """A declarative class for defining a workbench app start-up contribution.
 
-    AppStartup object can be contributed as extensions child to the 'startup'
-    extension point of the 'glaze' plugin. AppStartup object are used
+    AppStartup object can be contributed as extensions child to the "startup"
+    extension point of the "glaze" plugin. AppStartup object are used
     to customize the application start up.
 
     """
@@ -53,8 +53,8 @@ class AppStartup(Declarative):
 class AppClosing(Declarative):
     """A declarative class for defining a workbench app closing contribution.
 
-    AppClosing object can be contributed as extensions child to the 'closing'
-    extension point of the 'glaze' plugin. AppClosing object are used
+    AppClosing object can be contributed as extensions child to the "closing"
+    extension point of the "glaze" plugin. AppClosing object are used
     to check whether or not the application can be exited safely.
 
     """
@@ -85,8 +85,8 @@ class AppClosing(Declarative):
 class AppClosed(Declarative):
     """A declarative class for defining a workbench app closed contribution.
 
-    AppClosed object can be contributed as extensions child to the 'closed'
-    extension point of the 'glaze' plugin. AppClosed object are used
+    AppClosed object can be contributed as extensions child to the "closed"
+    extension point of the "glaze" plugin. AppClosed object are used
     to perform some clean up operation before stopping any plugin.
 
     MOST of the time performing clean up when stopping the plugin is sufficient

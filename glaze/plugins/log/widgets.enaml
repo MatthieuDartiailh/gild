@@ -15,7 +15,7 @@ enamldef LogDialog(Dialog):
     """Dialog presenting a log file..
 
     """
-    title = 'Log viewer'
+    title = "Log viewer"
 
     #: Log displayed
     attr log = ""

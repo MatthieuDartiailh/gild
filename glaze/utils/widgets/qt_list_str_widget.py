@@ -45,7 +45,7 @@ class QtListStrWidget(RawWidget):
     hug_height = set_default(str("ignore"))
 
     # PySide requires weakrefs for using bound methods as slots.
-    # PyQt doesn't, but executes unsafe code if not using weakrefs.
+    # PyQt doesn"t, but executes unsafe code if not using weakrefs.
     __slots__ = "__weakref__"
 
     def initialize(self):

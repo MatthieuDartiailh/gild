@@ -49,15 +49,15 @@ class ContainerChange(Atom):
 
         Parameters
         ----------
-        typ : {'added', 'moved', removed'}
+        typ : {"added", "moved", removed"}
             The type of operation to add to the change set.
 
         op_desc : tuple
             Tuple describing the operation it should be of the form:
 
-            - 'added' : (index, obj)
-            - 'moved' : (old_index, new_index, obj)
-            - 'removed' : (index, obj)
+            - "added" : (index, obj)
+            - "moved" : (old_index, new_index, obj)
+            - "removed" : (index, obj)
 
         """
         # If we are already working with a collapsed change simply check the

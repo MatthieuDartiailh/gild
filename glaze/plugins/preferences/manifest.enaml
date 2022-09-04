@@ -9,6 +9,7 @@
 
 """
 import os
+import pathlib
 import sys
 from typing import Any, Mapping, TYPE_CHECKING
 
@@ -99,8 +100,9 @@ def check_app_folder(workbench: Workbench, cmd_args: Mapping[str, str]) -> None:
     If not prompt the user to choose.
 
     """
+    home = pathlib.Path.home()
     manifest = workbench.get_manifest(PLUGIN_ID)
-    app_loc = os.path.join(os.path.expanduser("~"), "." + manifest.application_name)
+    app_loc = home / f".{manifest.application_name}"
     if (getattr(cmd_args, "reset_app_folder", None) or
         not os.path.isfile(app_loc) or
         "app_path" not in toml.load(app_loc)
@@ -108,7 +110,7 @@ def check_app_folder(workbench: Workbench, cmd_args: Mapping[str, str]) -> None:
 
         # Explicit casting to detect encoding issues.
         dial = AppDirSelectionDialog(
-            path=os.path.join(os.path.expanduser("~"), manifest.application_name)
+            path=str(home / manifest.application_name)
         )
         if not dial.exec_():
             sys.exit(1)
@@ -120,7 +122,7 @@ def check_app_folder(workbench: Workbench, cmd_args: Mapping[str, str]) -> None:
         try:
             os.makedirs(app_path)
         except Exception:
-            raise SystemExit("Cannot create application directory : %s" % app_path)
+            raise #SystemExit("Cannot create application directory : %s" % app_path)
 
 # ======================================================================================
 # --- Command handlers -----------------------------------------------------------------
@@ -254,10 +256,7 @@ enamldef PreferencesManifest(PluginManifest):
     #: Used for storing the location of the application folder and customizing dialogs.
     attr application_name: str
 
-    #: Should a menu action be added to show error reports
-    attr should_add_menu: bool = True
-
-    #: Path for the menu action
+    #: Path for the menu action. The menu will not be added if no path is provided.
     attr menu_root: str = "/prefs"
 
     # ==================================================================================
@@ -308,12 +307,12 @@ enamldef PreferencesManifest(PluginManifest):
             description = GET_PLUGIN_PREF_DESCRIPTION
             handler = get_plugin_preferences
 #        Command:
-#            id = "exopy.preferences.open_editor"
+#            id = "glaze.preferences.open_editor"
 #            description = OPEN_EDITOR_DESCRIPTION
 #            handler = open_editor
 
     Conditional:
-        condition = should_add_menu
+        condition = bool(menu_root)
         Extension:
             id = "menus"
             point = "enaml.workbench.ui.actions"
@@ -338,12 +337,12 @@ enamldef PreferencesManifest(PluginManifest):
                 path = menu_root + "/save_default"
                 label = "Save default"
                 group = "pref"
-                command = "exopy.preferences.save"
+                command = "glaze.preferences.save"
             ActionItem:
                 path = menu_root + "/load_default"
                 label = "Load default"
                 group = "pref"
-                command = "exopy.preferences.load"
+                command = "glaze.preferences.load"
     #        ActionItem:
     #            path = "/prefs/edit"
     #            label = "Edit"

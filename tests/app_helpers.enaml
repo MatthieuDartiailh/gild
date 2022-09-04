@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright 2015-2018 by Exopy Authors, see AUTHORS for more details.
+# Copyright 2022 by Glaze Authors, see AUTHORS for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -13,20 +13,20 @@ from functools import partial
 from atom.api import Atom, Str
 from enaml.workbench.api import PluginManifest, Extension
 
-from exopy.app.app_extensions import AppStartup, AppClosing, AppClosed
+from glaze.plugins.lifecycle import AppStartup, AppClosing, AppClosed
 
 # --- Start up ----------------------------------------------------------------
 
-# 'test' plugin register startup1 which should be called first and lead to the
-# registration of a new plugin ('nested'). This new plugin startup1 should
-# then be called given its priority an finally startup2 of both 'test' and
-# 'nested' in their registration order.
+# "test" plugin register startup1 which should be called first and lead to the
+# registration of a new plugin ("nested"). This new plugin startup1 should
+# then be called given its priority an finally startup2 of both "test" and
+# "nested" in their registration order.
 
 def run_and_register(obj, workbench, cmd_args):
     """Startup run function keeping track of the order of the call.
 
     """
-    m = workbench.get_manifest('test')
+    m = workbench.get_manifest("test")
     m.called.append(obj.id)
 
 
@@ -34,18 +34,18 @@ enamldef NestedStartupContributor(PluginManifest):
     """Plugin adding startup contributions.
 
     """
-    id = 'test_nested'
+    id = "test_nested"
 
     Extension:
-        id = 'startup'
-        point = 'exopy.app.startup'
+        id = "startup"
+        point = "glaze.lifecycle.startup"
         AppStartup:
-            id = 'test_nested.startup1'
+            id = "test_nested.startup1"
             run => (workbench, cmd_args):
                 run_and_register(self, workbench, cmd_args)
             priority = 0
         AppStartup:
-            id = 'test_nested.startup2'
+            id = "test_nested.startup2"
             run => (workbench, cmd_args):
                 run_and_register(self, workbench, cmd_args)
             priority = 1
@@ -63,18 +63,18 @@ enamldef StartupContributor(PluginManifest):
 
         """
         attr called = []
-        id = 'test'
+        id = "test"
 
         Extension:
-            id = 'startup'
-            point = 'exopy.app.startup'
+            id = "startup"
+            point = "glaze.lifecycle.startup"
             AppStartup:
-                id = 'test.startup1'
+                id = "test.startup1"
                 run => (workbench, cmd_args):
                     startup(workbench, cmd_args)
                 priority = 0
             AppStartup:
-                id = 'test.startup2'
+                id = "test.startup2"
                 run => (workbench, cmd_args):
                     run_and_register(self, workbench, cmd_args)
                 priority = 1
@@ -93,8 +93,8 @@ enamldef ClosingContributor(PluginManifest): man:
     id = id_
 
     Extension:
-        id = 'closing'
-        point = 'exopy.app.closing'
+        id = "closing"
+        point = "glaze.lifecycle.closing"
         AppClosing:
             id = id_
             validate => (window, event):
@@ -111,18 +111,18 @@ enamldef ClosingContributor(PluginManifest): man:
 
 
 enamldef ClosingContributor1(ClosingContributor):
-    id_ = 'test.closing1'
+    id_ = "test.closing1"
 
 
 enamldef ClosingContributor2(ClosingContributor):
-    id_ = 'test.closing2'
+    id_ = "test.closing2"
 
 # --- Closed ------------------------------------------------------------------
 
-# 'test' plugin register startup1 which should be called first and lead to the
-# registration of a new plugin ('nested'). This new plugin startup1 should
-# then be called given its priority an finally startup2 of both 'test' and
-# 'nested' in their registration order. This is not realistic but as it should
+# "test" plugin register startup1 which should be called first and lead to the
+# registration of a new plugin ("nested"). This new plugin startup1 should
+# then be called given its priority an finally startup2 of both "test" and
+# "nested" in their registration order. This is not realistic but as it should
 # work better to test it.
 
 
@@ -130,7 +130,7 @@ def clean_and_register(obj, workbench):
     """Startup runfunction keeping track of the order of the call.
 
     """
-    m = workbench.get_manifest('test')
+    m = workbench.get_manifest("test")
     m.called.append(obj.id)
 
 
@@ -138,18 +138,18 @@ enamldef NestedClosedContributor(PluginManifest):
     """Plugin adding closed contributions.
 
     """
-    id = 'test_nested'
+    id = "test_nested"
 
     Extension:
-        id = 'closed'
-        point = 'exopy.app.closed'
+        id = "closed"
+        point = "glaze.lifecycle.closed"
         AppClosed:
-            id = 'test_nested.closed1'
+            id = "test_nested.closed1"
             clean => (workbench):
                 clean_and_register(self, workbench)
             priority = 0
         AppClosed:
-            id = 'test_nested.closed2'
+            id = "test_nested.closed2"
             clean => (workbench):
                 clean_and_register(self, workbench)
             priority = 1
@@ -166,18 +166,18 @@ enamldef ClosedContributor(PluginManifest):
 
     """
     attr called = []
-    id = 'test'
+    id = "test"
 
     Extension:
-        id = 'startup'
-        point = 'exopy.app.closed'
+        id = "startup"
+        point = "glaze.lifecycle.closed"
         AppClosed:
-            id = 'test.closed1'
+            id = "test.closed1"
             clean => (workbench):
                 closed(workbench)
             priority = 0
         AppClosed:
-            id = 'test.closed2'
+            id = "test.closed2"
             clean => (workbench):
                 clean_and_register(self, workbench)
             priority = 1

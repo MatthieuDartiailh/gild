@@ -20,7 +20,7 @@ def add_destroy_hook(cls: Type[T]) -> Type[T]:
     """Add a declarative event signaling that an object will be destroyed."""
 
     class Destroyable(cls):  # type: ignore
-        """Subclass overriding the destroy method to emit 'ended' before
+        """Subclass overriding the destroy method to emit "ended" before
         destroying.
 
         """

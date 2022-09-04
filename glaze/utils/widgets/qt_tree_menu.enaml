@@ -10,13 +10,13 @@
 The action context will be set by the tree widget to a dictionary with the
 following keys:
 
-- 'copyable': bool, can the node be copied
-- 'cutable': bool, can the node be cut
-- 'pasteable': bool, can node be pasted here
-- 'renamable': bool, can the node be renamed
-- 'deletable': bool, can the node be deleted
-- 'not_root': bool, is the node the root node of the tree
-- 'data': tuple, (tree, TreeNode instance, object, id of the node)
+- "copyable": bool, can the node be copied
+- "cutable": bool, can the node be cut
+- "pasteable": bool, can node be pasted here
+- "renamable": bool, can the node be renamed
+- "deletable": bool, can the node be deleted
+- "not_root": bool, is the node the root node of the tree
+- "data": tuple, (tree, TreeNode instance, object, id of the node)
 
 """
 from copy import deepcopy
@@ -34,10 +34,10 @@ enamldef CopyAction(Action):
 
     """
     attr action_context
-    text = 'Copy'
-    visible << action_context['copyable']
+    text = "Copy"
+    visible << action_context["copyable"]
     triggered::
-        CLIPBOARD.instance = deepcopy(action_context['data'][2])
+        CLIPBOARD.instance = deepcopy(action_context["data"][2])
 
 
 # --- Cuts the current tree node object into the paste buffer -----------------
@@ -47,10 +47,10 @@ enamldef CutAction(Action):
 
     """
     attr action_context
-    text = 'Cut'
-    visible << action_context['cutable']
+    text = "Cut"
+    visible << action_context["cutable"]
     triggered::
-        widget, node, obj, nid = action_context['data']
+        widget, node, obj, nid = action_context["data"]
         CLIPBOARD.instance = obj
         widget._delete(*widget._node_index(nid))
 
@@ -62,10 +62,10 @@ enamldef PasteAction(Action):
 
     """
     attr action_context
-    text = 'Paste'
-    visible << action_context['pasteable']
+    text = "Paste"
+    visible << action_context["pasteable"]
     triggered::
-        widget, node, obj, nid = action_context['data']
+        widget, node, obj, nid = action_context["data"]
         widget._append(node, obj, CLIPBOARD.instance, False)
 
 
@@ -76,10 +76,10 @@ enamldef DeleteAction(Action):
 
     """
     attr action_context
-    text = 'Delete'
-    visible << action_context['deletable']
+    text = "Delete"
+    visible << action_context["deletable"]
     triggered::
-        widget, node, obj, nid = action_context['data']
+        widget, node, obj, nid = action_context["data"]
         rc = node.confirm_delete(obj)
         if rc is not False:
             if rc is not True:
@@ -90,7 +90,7 @@ enamldef DeleteAction(Action):
                             "Confirm Deletion",
                             "Are you sure you want to delete {}?".format(label)
                             )
-                if confirm is not None and confirm.action == 'accept':
+                if confirm is not None and confirm.action == "accept":
                     widget._delete( *widget._node_index( nid ) )
             else:
                 widget._delete( *widget._node_index( nid ) )
@@ -103,10 +103,10 @@ enamldef RenameAction(Action):
 
     """
     attr action_context
-    text = 'Rename'
-    visible << action_context['renamable']
+    text = "Rename"
+    visible << action_context["renamable"]
     triggered::
-        widget, node, obj, nid = action_context['data']
+        widget, node, obj, nid = action_context["data"]
         tree = widget.get_widget()
         blc = tree.blockSignals(True)
         nid.setText(0, node.enter_rename(obj))
@@ -130,7 +130,7 @@ enamldef NewAction(Action):
     kwargs : dict
         Keyword arguments to pass to the factory function.
 
-    mode : {'Append', 'Add before', 'Add after'}
+    mode : {"Append", "Add before", "Add after"}
         How to insert the new child into the hierarchy.
 
     """
@@ -139,18 +139,18 @@ enamldef NewAction(Action):
     text << mode
     attr args = ()
     attr kwargs = {}
-    attr mode = 'Append'
-    visible << mode == 'Append' or action_context['not_root']
+    attr mode = "Append"
+    visible << mode == "Append" or action_context["not_root"]
     triggered::
-        widget, node, obj, nid = action_context['data']
+        widget, node, obj, nid = action_context["data"]
         new_obj = factory(*args, **kwargs)
         if new_obj:
             tree = widget.get_widget()
-            if mode == 'Append':
+            if mode == "Append":
                 widget._append(node, obj, new_obj, False)
                 tree.setCurrentItem(nid.child(nid.childCount() - 1))
-            if mode.startswith('Add'):
-                if 'before' in mode:
+            if mode.startswith("Add"):
+                if "before" in mode:
                     index = widget._node_index(nid)[2]
                 else:
                     index = widget._node_index(nid)[2] + 1

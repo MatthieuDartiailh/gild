@@ -20,17 +20,17 @@ class TreeNode(Declarative):
     informations from the underlying object to populate the node.
 
     Note that a Menu can be contributed as a child and will be used when
-    right clicking a node. It will be passed a 'context' describing the node
+    right clicking a node. It will be passed a "context" describing the node
     being right-clicked.
 
     The context will be a dictionary with the following keys :
-    - 'copyable': bool, can the node be copied
-    - 'cutable': bool, can the node be cut
-    - 'pasteable': bool, can node be pasted here
-    - 'renamable': bool, can the node be renamed
-    - 'deletable': bool, can the node be deleted
-    - 'not_root': bool, is the node the root node of the tree
-    - 'data': tuple, (tree, TreeNode instance, object, id of the node)
+    - "copyable": bool, can the node be copied
+    - "cutable": bool, can the node be cut
+    - "pasteable": bool, can node be pasted here
+    - "renamable": bool, can the node be renamed
+    - "deletable": bool, can the node be deleted
+    - "not_root": bool, is the node the root node of the tree
+    - "data": tuple, (tree, TreeNode instance, object, id of the node)
 
     """
 
@@ -38,14 +38,14 @@ class TreeNode(Declarative):
     node_for = d_(List())
 
     #: Either the name of a member containing a label, or a constant label, if
-    #: the string starts with '='.
+    #: the string starts with "=".
     label = d_(Str())
 
     #: Either the name of a member containing a tooltip, or constant tooltip,
-    #: if the string starts with '='.
+    #: if the string starts with "=".
     tooltip = d_(Str())
 
-    #: Name of the member containing children (if '', the node is a leaf).
+    #: Name of the member containing children (if "", the node is a leaf).
     children_member = d_(Str())
 
     #: Name of the signal use to notify changes to the children. The payload of
@@ -61,16 +61,16 @@ class TreeNode(Declarative):
     #: Name to use for a new instance
     name = d_(Str())
 
-    #: Can the object's children be renamed?
+    #: Can the object"s children be renamed?
     rename = d_(Bool(True))
 
     #: Can the object be renamed?
     rename_me = d_(Bool(True))
 
-    #: Can the object's children be copied?
+    #: Can the object"s children be copied?
     copy = d_(Bool(True))
 
-    #: Can the object's children be deleted?
+    #: Can the object"s children be deleted?
     delete = d_(Bool(True))
 
     #: Can the object be deleted (if its parent allows it)?
@@ -114,7 +114,7 @@ class TreeNode(Declarative):
 
     @d_func
     def insert_child(self, obj, index, child):
-        """Inserts a child into the object's children."""
+        """Inserts a child into the object"s children."""
         getattr(obj, self.children_member)[index:index] = [child]
 
     @d_func
@@ -134,12 +134,12 @@ class TreeNode(Declarative):
 
     @d_func
     def delete_child(self, obj, index):
-        """Deletes a child at a specified index from the object's children."""
+        """Deletes a child at a specified index from the object"s children."""
         del getattr(obj, self.children_member)[index]
 
     @d_func
     def move_child(self, obj, old, new):
-        """Move a child of the object's children."""
+        """Move a child of the object"s children."""
         child = getattr(obj, self.children_member)[old]
         del getattr(obj, self.children_member)[old]
         getattr(obj, self.children_member)[new:new] = [child]
@@ -214,15 +214,15 @@ class TreeNode(Declarative):
         return len(self.get_children(obj)) > 0
 
     def get_children(self, obj):
-        """Gets the object's children."""
+        """Gets the object"s children."""
         return getattr(obj, self.children_member)
 
     def get_children_id(self, obj):
-        """Gets the object's children identifier."""
+        """Gets the object"s children identifier."""
         return self.children_member
 
     def append_child(self, obj, child):
-        """Appends a child to the object's children."""
+        """Appends a child to the object"s children."""
         self.insert_child(obj, len(getattr(obj, self.children_member)), child)
 
     def get_tooltip(self, obj):
@@ -254,7 +254,7 @@ class TreeNode(Declarative):
         return self.icon_group
 
     def get_icon_path(self, obj):
-        """Returns the path used to locate an object's icon."""
+        """Returns the path used to locate an object"s icon."""
         return self.icon_path
 
     def get_name(self, obj):
@@ -287,7 +287,7 @@ class TreeNode(Declarative):
         return foreground
 
     def can_rename(self, obj):
-        """Returns whether the object's children can be renamed."""
+        """Returns whether the object"s children can be renamed."""
         return self.rename
 
     def can_rename_me(self, obj):
@@ -295,11 +295,11 @@ class TreeNode(Declarative):
         return self.rename_me
 
     def can_copy(self, obj):
-        """Returns whether the object's children can be copied."""
+        """Returns whether the object"s children can be copied."""
         return self.copy
 
     def can_delete(self, obj):
-        """Returns whether the object's children can be deleted."""
+        """Returns whether the object"s children can be deleted."""
         return self.delete
 
     def can_delete_me(self, obj):
@@ -307,21 +307,21 @@ class TreeNode(Declarative):
         return self.delete_me
 
     def can_insert(self, obj):
-        """Returns whether the object's children can be inserted (vs.
+        """Returns whether the object"s children can be inserted (vs.
         appended).
 
         """
         return self.insert
 
     def can_auto_open(self, obj):
-        """Returns whether the object's children should be automatically
+        """Returns whether the object"s children should be automatically
         opened.
 
         """
         return self.auto_open
 
     def can_auto_close(self, obj):
-        """Returns whether the object's children should be automatically
+        """Returns whether the object"s children should be automatically
         closed.
 
         """

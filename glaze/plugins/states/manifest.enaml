@@ -13,7 +13,7 @@ from enaml.workbench.core.api import Command
 
 from glaze.utils.plugin_tools import make_handler
 
-PLUGIN_ID = 'glaze.states'
+PLUGIN_ID = "glaze.states"
 
 # ======================================================================================
 # --- Factories ------------------------------------------------------------------------
@@ -60,7 +60,7 @@ enamldef StateManifest(PluginManifest):
     # ==================================================================================
 
     ExtensionPoint:
-        id = 'state'
+        id = "state"
         description = STATES_DESCRIPTION
 
     # ==================================================================================
@@ -68,9 +68,9 @@ enamldef StateManifest(PluginManifest):
     # ==================================================================================
 
     Extension:
-        id = 'commands'
-        point = 'enaml.workbench.core.commands'
+        id = "commands"
+        point = "enaml.workbench.core.commands"
         Command:
-            id = 'glaze.states.get'
+            id = "glaze.states.get"
             description = SAVE_PREF_DESCRIPTION
             handler = make_handler(PLUGIN_ID, "get_state")

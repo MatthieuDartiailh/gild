@@ -88,7 +88,7 @@ def member_from_pref(obj: Atom, member: Member, val: Any) -> Any:
     """
     meta_value = member.metadata[PREF_KEY]
 
-    # If 'pref=True' then we rely on the standard save mechanism
+    # If "pref=True" then we rely on the standard save mechanism
     if meta_value is True:
         # We assume the parser takes care of simple coversion for us.
         value = val
@@ -113,7 +113,7 @@ def member_from_pref(obj: Atom, member: Member, val: Any) -> Any:
         raise NotImplementedError(
             fill(
                 cleandoc(
-                    """you set 'pref=False' for this member. If you did
+                    """you set "pref=False" for this member. If you did
             not want to save it you should simply not declare this tag."""
                 )
             )
@@ -122,10 +122,10 @@ def member_from_pref(obj: Atom, member: Member, val: Any) -> Any:
         raise NotImplementedError(
             fill(
                 cleandoc(
-                    """the 'pref' tag of this member was not set to true,
+                    """the "pref" tag of this member was not set to true,
             therefore the program expects you to declare two functions,
-             'member_to_pref(obj,member,val)' and 'member_from_pref(obj,member,
-             val)' that will handle the serialization and deserialization of
+             "member_to_pref(obj,member,val)" and "member_from_pref(obj,member,
+             val)" that will handle the serialization and deserialization of
              the value. Those should be passed as a list or a tuple, where
              the first element is member_to and the second is member_from.
              It is possible that you failed to properly declare the signature
@@ -159,7 +159,7 @@ def member_to_pref(obj: Atom, member: Member, val: Any) -> Any:
     """
     meta_value = member.metadata[PREF_KEY]
 
-    # If 'pref=True' then we rely on the standard save mechanism
+    # If "pref=True" then we rely on the standard save mechanism
     if meta_value is True:
         pref_value = val
 
@@ -176,7 +176,7 @@ def member_to_pref(obj: Atom, member: Member, val: Any) -> Any:
         raise NotImplementedError(
             fill(
                 cleandoc(
-                    """you set 'pref=False' for this member. If you did
+                    """you set "pref=False" for this member. If you did
             not want to save it you should simply not declare this tag."""
                 )
             )
@@ -185,10 +185,10 @@ def member_to_pref(obj: Atom, member: Member, val: Any) -> Any:
         raise NotImplementedError(
             fill(
                 cleandoc(
-                    """the 'pref' tag of this member was not set to true,
+                    """the "pref" tag of this member was not set to true,
             therefore the program expects you to declare two functions,
-             'member_to_pref(obj,member,val)' and 'member_from_pref(obj,member,
-             val)' that will handle the serialization and deserialization of
+             "member_to_pref(obj,member,val)" and "member_from_pref(obj,member,
+             val)" that will handle the serialization and deserialization of
              the value. Those should be passed as a list or a tuple, where
              the first element is member_to and the second is member_from.
              It is possible that you failed to properly declare the signature

@@ -147,7 +147,7 @@ class GroupDeclarator(Declarator):
 
     def __str__(self) -> str:
         """Identify the declarator by its path and group."""
-        st = '{} whose path is "{}" and group is "{}" declaring :\n{}'
+        st = "{} whose path is '{}' and group is '{}' declaring :\n{}"
         return st.format(
             type(self).__name__,
             self.path,

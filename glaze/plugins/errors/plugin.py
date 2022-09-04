@@ -181,6 +181,8 @@ class ErrorsPlugin(Plugin):
             )
             warning(ui.window, "Consider restart", fill(msg))
 
+            # XXX offer a way to examine the error
+
         import sys
 
         sys.excepthook = exception_handler
@@ -248,6 +250,6 @@ class ErrorsPlugin(Plugin):
         except Exception:
             msg = "Failed to format the errors infos.\n" + format_exc()
 
-        logger.debug('No handler found for "%s" kind of error:\n %s', kind, msg)
+        logger.debug("No handler found for '%s' kind of error:\n %s", kind, msg)
 
         return UnknownErrorWidget(kind=kind, msg=msg)

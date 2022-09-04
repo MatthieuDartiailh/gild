@@ -47,8 +47,8 @@ def log_plugin_factory() -> "LogPlugin":
 # ======================================================================================
 
 # FIXME cleanup and add more parametrization from the manifest
-# (may need an extra extnesion point)
-def start_logging(workbench: Workbench) -> None:
+# (may need an extra extension point)
+def start_logging(workbench: Workbench, cmd_args) -> None:
     """Start logging system and register default handlers.
 
     """
@@ -83,7 +83,10 @@ def start_logging(workbench: Workbench) -> None:
     log_plugin.add_handler("glaze.gui_log", GuiHandler(model))
 
     # Automatic redirection of stdout and stderr to the log system if requested
-    if not log_manifest.no_capture:
+    if (
+        log_manifest.no_capture_varname
+        and not getattr(cmd_args, log_manifest.no_capture_varname)
+    ):
         redir_stdout = StreamToLogRedirector(logger)
         redir_stderr = StreamToLogRedirector(logger, stream_type="stderr")
         sys.stdout = redir_stdout
@@ -194,14 +197,12 @@ enamldef LogManifest(PluginManifest):
     #: Filename to use for the main log file
     attr log_filename: str = "glaze.log"
 
-    #: Should a menu action be added to show error reports
-    attr should_add_menu: bool = True
+    #: Path for the menu action, no menu will be added if this is left empty.
+    attr menu_path: str
 
-    #: Path for the menu action
-    attr menu_path: str = "/tools/log"
-
-    #: Should we capture the stdout and stderr
-    attr no_capture: bool = False
+    #: Name of the command line argument that can be used to control the capture
+    #: of stdout and stderr.
+    attr no_capture_varname: str
 
     # ==================================================================================
     # --- Extensions -------------------------------------------------------------------
@@ -213,7 +214,7 @@ enamldef LogManifest(PluginManifest):
             id = "glaze.logging"
             priority = 1
             run => (workbench, cmd_args):
-                start_logging(workbench)
+                start_logging(workbench, cmd_args)
 
     Extension:
         id = "state"
@@ -223,7 +224,7 @@ enamldef LogManifest(PluginManifest):
             sync_members = ["handler_ids", "filter_ids", "gui_model"]
 
     Conditional:
-        condition = should_add_menu
+        condition = bool(menu_path)
         Extension:
             id = "menus"
             point = "enaml.workbench.ui.actions"

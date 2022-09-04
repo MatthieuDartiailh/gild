@@ -16,11 +16,11 @@ enamldef AppWindow(WorkbenchWindow):
 
     """
     closing ::
-        plugin = self.workbench.get_plugin('glaze.lifecycle')
-        plugin.validate_closing(self, change['value'])
+        plugin = self.workbench.get_plugin("glaze.lifecycle")
+        plugin.validate_closing(self, change["value"])
     closed ::
-        core = workbench.get_plugin('enaml.workbench.core')
-        core.invoke_command('enaml.workbench.ui.close_workspace',
+        core = workbench.get_plugin("enaml.workbench.core")
+        core.invoke_command("enaml.workbench.ui.close_workspace",
                             {}, workbench)
-        plugin = self.workbench.get_plugin('glaze.lifecycle')
+        plugin = self.workbench.get_plugin("glaze.lifecycle")
         plugin.run_app_cleanup()

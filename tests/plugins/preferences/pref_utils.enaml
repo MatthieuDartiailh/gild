@@ -1,0 +1,69 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Copyright 2022 by Glaze Authors, see AUTHORS for more details.
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# -----------------------------------------------------------------------------
+"""Preferences plugin test helpers.
+
+"""
+from atom.api import Atom, Str
+from enaml.workbench.api import PluginManifest, Extension
+
+from glaze.utils.plugin_tools import HasPreferencesPlugin
+from glaze.plugins.preferences.preferences import Preferences
+
+
+class _Pref(HasPreferencesPlugin):
+    """Plugin having two members declared as preferences.
+
+    """
+    #: Non auto saving member.
+    string = Str().tag(pref=True)
+
+    #: Member needing to be automatically saved.
+    auto = Str().tag(pref=True)
+
+
+enamldef PrefContributor(PluginManifest):
+    """Manifest declaring preferences for its plugin.
+
+    """
+    id = "test.prefs"
+    factory = _Pref
+
+    Extension:
+        id = "prefs"
+        point = "glaze.preferences.plugin"
+        Preferences:
+            auto_save = ["auto"]
+
+
+enamldef PrefContributor2(PluginManifest):
+    """Manifest declaring preferences for its plugin.
+
+    """
+    id = "test.prefs2"
+    factory = _Pref
+
+    Extension:
+        id = "prefs"
+        point = "glaze.preferences.plugin"
+        Preferences:
+            auto_save = ["auto"]
+
+
+enamldef BadPrefContributor(PluginManifest):
+    """Manifest declaring preferences for its plugin but using the wrong type
+    of object.
+
+    """
+    id = "test.bad_prefs"
+    factory = _Pref
+
+    Extension:
+        id = "prefs"
+        point = "glaze.preferences.plugin"
+        factory = lambda w: None

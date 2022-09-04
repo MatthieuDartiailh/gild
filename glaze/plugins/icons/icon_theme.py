@@ -8,7 +8,7 @@
 """Extension objects to the icon plugin.
 
 """
-from typing import TYPE_CHECKING, Optional, List as TList
+from typing import TYPE_CHECKING, List as TList, Optional
 
 from atom.api import Dict, List, Str
 from enaml.core.api import Declarative, d_, d_func

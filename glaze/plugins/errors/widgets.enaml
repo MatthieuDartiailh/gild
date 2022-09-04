@@ -27,7 +27,7 @@ enamldef ErrorsDialog(Dialog):
     #: widget which we display in a notebook page.
     attr errors : dict
 
-    title = 'Application errors'
+    title = "Application errors"
 
     Conditional:
         condition = bool(errors)
@@ -58,7 +58,7 @@ enamldef ErrorsDialog(Dialog):
         condition = not bool(errors)
         Container:
             MultilineField:
-                text = 'No error occured'
+                text = "No error occured"
                 read_only = True
 
 
@@ -74,7 +74,7 @@ enamldef UnknownErrorWidget(Container):
 
     Label:
         text =\
-            'No handler was found for %s, the formatted infos are below' % kind
+            "No handler was found for %s, the formatted infos are below" % kind
 
     MultilineField:
         text = msg
@@ -97,19 +97,19 @@ enamldef BasicErrorsDisplay(Container):
 
 
     constraints = [vbox(hbox(lis_lab, che_lab), hbox(lis, che)),
-                   align('left', lis_lab, lis),
-                   align('left', che_lab, che)]
+                   align("left", lis_lab, lis),
+                   align("left", che_lab, che)]
 
     Label: lis_lab:
         pass
     QtListStrWidget: lis:
         items = sorted(errors.keys())
-        hug_height = 'ignore'
+        hug_height = "ignore"
 
     Label: che_lab:
-        text << selected if selected else ''
+        text << selected if selected else ""
     MultilineField: che:
-        text << errors[selected] if (errors and selected) else ''
+        text << errors[selected] if (errors and selected) else ""
         read_only = True
 
 
@@ -120,12 +120,12 @@ def format_error(node):
     if isinstance(node, Leaf):
         return str(node.value)
     else:
-        msg = 'Node %s contains the following entries :\n' % node.name
+        msg = "Node %s contains the following entries :\n" % node.name
         for n in node.nodes:
             if isinstance(n, Leaf):
-                msg += '- %s : %s\n' % (n.name, str(n.value).split('\n', 1)[0])
+                msg += "- %s : %s\n" % (n.name, str(n.value).split("\n", 1)[0])
             else:
-                msg += '- %s : node\n' % n.name
+                msg += "- %s : node\n" % n.name
 
         return msg
 
@@ -151,7 +151,7 @@ enamldef HierarchicalErrorsDisplay(Container): main:
     Label: lis_lab:
         pass
     DictTreeView: tr:
-        hug_height = 'ignore'
+        hug_height = "ignore"
 
     MultilineField: txt:
         text << format_error(tr.selected_item)

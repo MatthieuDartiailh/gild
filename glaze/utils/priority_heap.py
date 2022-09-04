@@ -10,7 +10,6 @@
 """
 import heapq
 
-
 #: Sentinel used to invalidated an object in the heap.
 _REMOVED = object()
 

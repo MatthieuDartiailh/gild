@@ -8,6 +8,11 @@
 """Managing preferences saving/loading.
 
 """
+import enaml
+
 from .preferences import Preferences
 
-__all__ = ["Preferences"]
+with enaml.imports():
+    from .manifest import PreferencesManifest
+
+__all__ = ["Preferences", "PreferencesManifest"]
