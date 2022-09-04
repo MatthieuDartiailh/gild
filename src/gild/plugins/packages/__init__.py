@@ -12,3 +12,6 @@ import enaml
 
 with enaml.imports():
     from .manifest import PackagesManifest
+
+
+__all__ = ["PackagesManifest"]

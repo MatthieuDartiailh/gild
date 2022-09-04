@@ -13,7 +13,7 @@ from traceback import format_exc
 from typing import MutableMapping, Union
 
 import pkg_resources
-from atom.api import Dict, List, Str
+from atom.api import Dict, List
 from enaml.workbench.api import Plugin, PluginManifest
 
 logger = logging.getLogger(__name__)

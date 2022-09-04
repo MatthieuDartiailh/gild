@@ -10,7 +10,6 @@
 """
 import gc
 import inspect
-import os
 import weakref
 from collections import OrderedDict
 from contextlib import contextmanager

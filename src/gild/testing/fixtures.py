@@ -9,15 +9,12 @@
 
 """
 import logging
-import os
 import pathlib
 
 import pytest
 import toml
 from enaml.qt.qt_application import QtApplication
 from enaml.workbench.api import Workbench
-
-from gild.plugins.preferences import PreferencesManifest
 
 from .util import close_all_popups, close_all_windows
 

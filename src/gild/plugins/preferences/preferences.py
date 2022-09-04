@@ -8,8 +8,6 @@
 """Declarative class for defining hnadling of preferences.
 
 """
-from sqlite3 import paramstyle
-
 from atom.api import List, Property, Str
 from enaml.core.api import Declarative, d_, d_func
 from enaml.widgets.container import Container
