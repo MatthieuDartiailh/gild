@@ -9,11 +9,10 @@
 
 """
 import os
-import pathlib
 
 import enaml
 import pytest
-import toml
+import rtoml as toml
 
 from gild.plugins.errors import ErrorsManifest
 from gild.plugins.lifecycle import LifecycleManifest

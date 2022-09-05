@@ -13,7 +13,7 @@ import pathlib
 import sys
 from typing import Any, Mapping, TYPE_CHECKING
 
-import toml
+import rtoml as toml
 from enaml.core.api import Conditional
 from enaml.layout.api import hbox, vbox, spacer
 from enaml.workbench.api import Extension, ExtensionPoint, PluginManifest, Workbench
@@ -103,9 +103,10 @@ def check_app_folder(workbench: Workbench, cmd_args: Mapping[str, str]) -> None:
     home = pathlib.Path.home()
     manifest = workbench.get_manifest(PLUGIN_ID)
     app_loc = home / f".{manifest.application_name}"
-    if (getattr(cmd_args, "reset_app_folder", None) or
-        not os.path.isfile(app_loc) or
-        "app_path" not in toml.load(app_loc)
+
+    if (getattr(cmd_args, "reset_app_folder", None)
+        or not app_loc.is_file()
+        or "app_path" not in toml.load(app_loc)
     ):
 
         # Explicit casting to detect encoding issues.

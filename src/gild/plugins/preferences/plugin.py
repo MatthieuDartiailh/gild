@@ -14,8 +14,8 @@ from collections import OrderedDict
 from functools import partial
 from typing import Any, Mapping, Optional
 
-import toml
-from atom.api import Str, Typed
+import rtoml as toml
+from atom.api import Dict, Str, Typed
 from enaml.workbench.api import Plugin
 
 from gild.utils.plugin_tools import ExtensionsCollector
@@ -53,14 +53,14 @@ class PrefPlugin(Plugin):
         self.app_directory = app_path
         self._prefs = OrderedDict()
 
-        pref_path = os.path.join(app_path, "preferences")
-        if not os.path.isdir(pref_path):
-            os.mkdir(pref_path)
+        pref_path = pathlib.Path(app_path) / "preferences"
+        if not pref_path.is_dir():
+            pref_path.mkdir()
 
-        default_pref_path = os.path.join(pref_path, "default.toml")
-        self._last_saved_pref_file = default_pref_path
-        if os.path.isfile(default_pref_path):
-            self._prefs = toml.load(default_pref_path, OrderedDict)
+        default_pref_path = pref_path / "default.toml"
+        self._last_saved_pref_file = str(default_pref_path)
+        if default_pref_path.is_file():
+            self._prefs = toml.load(default_pref_path)
 
         self._pref_decls = ExtensionsCollector(
             workbench=self.workbench, point=PREFS_POINT, ext_class=Preferences
@@ -94,7 +94,7 @@ class PrefPlugin(Plugin):
 
         self._last_saved_pref_file = str(path)
         with open(path, "w", encoding="utf-8") as f:
-            toml.dump(prefs, f)
+            toml.dump(prefs, f, pretty=True)
 
     def load_preferences(self, path: Optional[str] = None) -> None:
         """Load preferences and update all registered plugin.
@@ -112,7 +112,8 @@ class PrefPlugin(Plugin):
         if not os.path.isfile(path):
             return
 
-        prefs = toml.load(path, OrderedDict)
+        with open(path) as f:
+            prefs = toml.load(f)
         self._prefs |= prefs
         # FIXME need a custom way to merge dict (move from errors to some utils)
         for plugin_id in prefs:
@@ -181,7 +182,7 @@ class PrefPlugin(Plugin):
     _last_saved_pref_file = Str()
 
     #: Ordered dict in which the preferences are stored
-    _prefs = Typed(OrderedDict)
+    _prefs = Dict(str)
 
     #: Mapping between plugin_id and the declared preferences.
     _pref_decls = Typed(ExtensionsCollector)
@@ -206,4 +207,4 @@ class PrefPlugin(Plugin):
             self._prefs[plugin_id] = {name: value}
 
         with open(self._last_saved_pref_file, "w") as f:
-            toml.dump(self._prefs, f)
+            toml.dump(self._prefs, f, pretty=True)

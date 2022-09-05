@@ -12,7 +12,7 @@ import logging
 import pathlib
 
 import pytest
-import toml
+import rtoml as toml
 from enaml.qt.qt_application import QtApplication
 from enaml.workbench.api import Workbench
 
