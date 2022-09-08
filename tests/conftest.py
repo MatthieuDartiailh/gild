@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Copyright 2022 by Glaze Authors, see AUTHORS for more details.
+# Copyright 2022 by Gild Authors, see AUTHORS for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -14,7 +14,7 @@ from enaml.qt import QT_API
 
 os.environ.setdefault("PYTEST_QT_API", QT_API)
 
-pytest_plugins = ("glaze.testing.fixtures",)
+pytest_plugins = ("gild.testing.fixtures",)
 
 
 def pytest_configure(config):

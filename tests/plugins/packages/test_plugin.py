@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright 2022 by Glaze Authors, see AUTHORS for more details.
+# Copyright 2022 by Gild Authors, see AUTHORS for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -13,10 +13,10 @@ import enaml
 import pytest
 from atom.api import Atom, Bool, Str, Value
 
-from glaze.plugins.errors import ErrorsManifest
-from glaze.plugins.lifecycle import LifecycleManifest
-from glaze.plugins.packages import PackagesManifest
-from glaze.testing.util import handle_dialog
+from gild.plugins.errors import ErrorsManifest
+from gild.plugins.lifecycle import LifecycleManifest
+from gild.plugins.packages import PackagesManifest
+from gild.testing.util import handle_dialog
 
 with enaml.imports():
     from enaml.workbench.core.core_manifest import CoreManifest
@@ -24,8 +24,8 @@ with enaml.imports():
     from .packages_utils import Manifest1, Manifest2
 
 
-APP_ID = "glaze.lifecycle"
-PACKAGES_ID = "glaze.packages"
+APP_ID = "gild.lifecycle"
+PACKAGES_ID = "gild.packages"
 
 
 @pytest.fixture
@@ -40,7 +40,7 @@ def pack_workbench(workbench):
 
 def patch_pkg(monkey, answer):
     """Patch the pkg_resources.iter_entry_points function."""
-    from glaze.plugins.packages.plugin import pkg_resources
+    from gild.plugins.packages.plugin import pkg_resources
 
     monkey.setattr(pkg_resources, "iter_entry_points", lambda x: answer)
 
@@ -66,7 +66,7 @@ class FalseEntryPoint(Atom):
         return lambda: self.manifests
 
 
-def test_collecting_registering_and_stopping(monkeypatch, pack_workbench, glaze_qtbot):
+def test_collecting_registering_and_stopping(monkeypatch, pack_workbench, gild_qtbot):
     """Test basic behavior of PackaggesPlugin."""
     patch_pkg(
         monkeypatch,
@@ -83,26 +83,26 @@ def test_collecting_registering_and_stopping(monkeypatch, pack_workbench, glaze_
         plugin = pack_workbench.get_plugin(PACKAGES_ID)
         assert "test" in plugin.packages
 
-    glaze_qtbot.wait_until(assert_registered)
+    gild_qtbot.wait_until(assert_registered)
 
     plugin = pack_workbench.get_plugin(PACKAGES_ID)
     assert "test2" in plugin.packages
-    assert "glaze.test1" in plugin.packages["test"]
-    assert "glaze.test2" in plugin.packages["test"]
-    assert (100, 0, "glaze.test1") in plugin._registered
-    assert (0, 1, "glaze.test2") in plugin._registered
-    assert pack_workbench.get_plugin("glaze.test1")
-    assert pack_workbench.get_plugin("glaze.test2")
+    assert "gild.test1" in plugin.packages["test"]
+    assert "gild.test2" in plugin.packages["test"]
+    assert (100, 0, "gild.test1") in plugin._registered
+    assert (0, 1, "gild.test2") in plugin._registered
+    assert pack_workbench.get_plugin("gild.test1")
+    assert pack_workbench.get_plugin("gild.test2")
 
     pack_workbench.unregister(PACKAGES_ID)
 
     with pytest.raises(ValueError):
-        pack_workbench.get_plugin("glaze.test1")
+        pack_workbench.get_plugin("gild.test1")
     with pytest.raises(ValueError):
-        pack_workbench.get_plugin("glaze.test2")
+        pack_workbench.get_plugin("gild.test2")
 
 
-def test_unmet_requirement(monkeypatch, pack_workbench, glaze_qtbot):
+def test_unmet_requirement(monkeypatch, pack_workbench, gild_qtbot):
     """Test loading an extension package for which some requirements are not
     met.
 
@@ -116,7 +116,7 @@ def test_unmet_requirement(monkeypatch, pack_workbench, glaze_qtbot):
     )
 
     app = pack_workbench.get_plugin(APP_ID)
-    with handle_dialog(glaze_qtbot):
+    with handle_dialog(gild_qtbot):
         app.run_app_startup(object())
 
     plugin = pack_workbench.get_plugin(PACKAGES_ID)
@@ -127,7 +127,7 @@ def test_unmet_requirement(monkeypatch, pack_workbench, glaze_qtbot):
     assert not plugin._registered
 
 
-def test_wrong_return_type(monkeypatch, pack_workbench, glaze_qtbot):
+def test_wrong_return_type(monkeypatch, pack_workbench, gild_qtbot):
     """Test handling a wrong return type from the callable returned by load."""
     patch_pkg(
         monkeypatch,
@@ -138,7 +138,7 @@ def test_wrong_return_type(monkeypatch, pack_workbench, glaze_qtbot):
     )
 
     app = pack_workbench.get_plugin(APP_ID)
-    with handle_dialog(glaze_qtbot):
+    with handle_dialog(gild_qtbot):
         app.run_app_startup(object())
 
     plugin = pack_workbench.get_plugin(PACKAGES_ID)
@@ -149,7 +149,7 @@ def test_wrong_return_type(monkeypatch, pack_workbench, glaze_qtbot):
     assert not plugin._registered
 
 
-def test_non_manifest(monkeypatch, pack_workbench, glaze_qtbot):
+def test_non_manifest(monkeypatch, pack_workbench, gild_qtbot):
     """Test handling a non PluginManifest in the list of manifests."""
     patch_pkg(
         monkeypatch,
@@ -160,7 +160,7 @@ def test_non_manifest(monkeypatch, pack_workbench, glaze_qtbot):
     )
 
     app = pack_workbench.get_plugin(APP_ID)
-    with handle_dialog(glaze_qtbot):
+    with handle_dialog(gild_qtbot):
         app.run_app_startup(object())
 
     plugin = pack_workbench.get_plugin(PACKAGES_ID)
@@ -171,7 +171,7 @@ def test_non_manifest(monkeypatch, pack_workbench, glaze_qtbot):
     assert not plugin._registered
 
 
-def test_registering_issue(monkeypatch, pack_workbench, glaze_qtbot):
+def test_registering_issue(monkeypatch, pack_workbench, gild_qtbot):
     """Test handling an error when registering a manifest."""
     patch_pkg(
         monkeypatch,
@@ -182,20 +182,20 @@ def test_registering_issue(monkeypatch, pack_workbench, glaze_qtbot):
     )
 
     app = pack_workbench.get_plugin(APP_ID)
-    with handle_dialog(glaze_qtbot):
+    with handle_dialog(gild_qtbot):
         app.run_app_startup(object())
 
     plugin = pack_workbench.get_plugin(PACKAGES_ID)
 
     assert "test" in plugin.packages
     assert "test2" in plugin.packages
-    assert "glaze.test1" in plugin.packages["test"]
+    assert "gild.test1" in plugin.packages["test"]
     assert len(plugin.packages["test"]) == 1
 
 
 def test_reporting_single_package_error(pack_workbench):
     """Check handling a single package error."""
-    plugin = pack_workbench.get_plugin("glaze.errors")
+    plugin = pack_workbench.get_plugin("gild.errors")
     handler = plugin._errors_handlers.contributions["package"]
 
     assert handler.handle(pack_workbench, {"id": "test", "message": "test"})
@@ -206,7 +206,7 @@ def test_reporting_single_package_error(pack_workbench):
 
 def test_reporting_multiple_package_error(pack_workbench):
     """Check handling multiple package errors."""
-    plugin = pack_workbench.get_plugin("glaze.errors")
+    plugin = pack_workbench.get_plugin("gild.errors")
     handler = plugin._errors_handlers.contributions["package"]
 
     assert handler.handle(pack_workbench, [{"id": "test", "message": "test"}])

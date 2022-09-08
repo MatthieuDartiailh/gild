@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright 2022 by Glaze Authors, see AUTHORS for more details.
+# Copyright 2022 by Gild Authors, see AUTHORS for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -12,8 +12,8 @@
 from atom.api import Atom, Str
 from enaml.workbench.api import PluginManifest, Extension
 
-from glaze.utils.plugin_tools import HasPreferencesPlugin
-from glaze.plugins.preferences.preferences import Preferences
+from gild.utils.plugin_tools import HasPreferencesPlugin
+from gild.plugins.preferences.preferences import Preferences
 
 
 class _Pref(HasPreferencesPlugin):
@@ -36,7 +36,7 @@ enamldef PrefContributor(PluginManifest):
 
     Extension:
         id = "prefs"
-        point = "glaze.preferences.plugin"
+        point = "gild.preferences.plugin"
         Preferences:
             auto_save = ["auto"]
 
@@ -50,7 +50,7 @@ enamldef PrefContributor2(PluginManifest):
 
     Extension:
         id = "prefs"
-        point = "glaze.preferences.plugin"
+        point = "gild.preferences.plugin"
         Preferences:
             auto_save = ["auto"]
 
@@ -65,5 +65,5 @@ enamldef BadPrefContributor(PluginManifest):
 
     Extension:
         id = "prefs"
-        point = "glaze.preferences.plugin"
+        point = "gild.preferences.plugin"
         factory = lambda w: None

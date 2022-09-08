@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright 2022 Glaze Authors, see AUTHORS for more details.
+# Copyright 2022 Gild Authors, see AUTHORS for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -9,7 +9,7 @@
 """Test for the mapping utilities functions.
 
 """
-from glaze.utils.mapping_utils import recursive_update
+from gild.utils.mapping_utils import recursive_update
 
 
 def test_recurvise_update():

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright 2022 by Glaze Authors, see AUTHORS for more details.
+# Copyright 2022 by Gild Authors, see AUTHORS for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -13,7 +13,7 @@ from functools import partial
 from atom.api import Atom, Str
 from enaml.workbench.api import PluginManifest, Extension
 
-from glaze.plugins.lifecycle import AppStartup, AppClosing, AppClosed
+from gild.plugins.lifecycle import AppStartup, AppClosing, AppClosed
 
 # --- Start up ----------------------------------------------------------------
 
@@ -38,7 +38,7 @@ enamldef NestedStartupContributor(PluginManifest):
 
     Extension:
         id = "startup"
-        point = "glaze.lifecycle.startup"
+        point = "gild.lifecycle.startup"
         AppStartup:
             id = "test_nested.startup1"
             run => (workbench, cmd_args):
@@ -67,7 +67,7 @@ enamldef StartupContributor(PluginManifest):
 
         Extension:
             id = "startup"
-            point = "glaze.lifecycle.startup"
+            point = "gild.lifecycle.startup"
             AppStartup:
                 id = "test.startup1"
                 run => (workbench, cmd_args):
@@ -94,7 +94,7 @@ enamldef ClosingContributor(PluginManifest): man:
 
     Extension:
         id = "closing"
-        point = "glaze.lifecycle.closing"
+        point = "gild.lifecycle.closing"
         AppClosing:
             id = id_
             validate => (window, event):
@@ -142,7 +142,7 @@ enamldef NestedClosedContributor(PluginManifest):
 
     Extension:
         id = "closed"
-        point = "glaze.lifecycle.closed"
+        point = "gild.lifecycle.closed"
         AppClosed:
             id = "test_nested.closed1"
             clean => (workbench):
@@ -170,7 +170,7 @@ enamldef ClosedContributor(PluginManifest):
 
     Extension:
         id = "startup"
-        point = "glaze.lifecycle.closed"
+        point = "gild.lifecycle.closed"
         AppClosed:
             id = "test.closed1"
             clean => (workbench):

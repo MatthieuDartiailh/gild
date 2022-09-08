@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright 2022 by Glaze Authors, see AUTHORS for more details.
+# Copyright 2022 by Gild Authors, see AUTHORS for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -16,13 +16,13 @@ from pytest import raises
 with enaml.imports():
     from enaml.workbench.core.core_manifest import CoreManifest
 
-    from glaze.plugins.states.manifest import StateManifest
+    from gild.plugins.states.manifest import StateManifest
 
     from .states_utils import StateContributor
 
 
 CORE_PLUGIN = "enaml.workbench.core"
-GET_STATE = "glaze.states.get"
+GET_STATE = "gild.states.get"
 
 STATE_ID = "test.states.state"
 
@@ -47,7 +47,7 @@ class TestState(object):
         with raises(AttributeError):
             state.string = 1
 
-        self.workbench.unregister("glaze.states")
+        self.workbench.unregister("gild.states")
 
     def test_state_unicity(self):
         """Test that asking twice the same state return the same object."""

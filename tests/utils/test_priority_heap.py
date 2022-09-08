@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Copyright 2022 Glaze Authors, see AUTHORS for more details.
+# Copyright 2022 Gild Authors, see AUTHORS for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -10,7 +10,7 @@
 """
 from pytest import raises
 
-from glaze.utils.priority_heap import PriorityHeap
+from gild.utils.priority_heap import PriorityHeap
 
 
 class TestPriorityHeap(object):

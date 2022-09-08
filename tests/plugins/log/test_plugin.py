@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Copyright 2022 by Glaze Authors, see AUTHORS for more details.
+# Copyright 2022 by Gild Authors, see AUTHORS for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -16,18 +16,18 @@ import enaml
 import pytest
 from enaml.workbench.api import Workbench
 
-from glaze.plugins.lifecycle import LifecycleManifest
-from glaze.plugins.log import LogManifest
-from glaze.plugins.log.tools import GuiHandler, LogModel, StreamToLogRedirector
-from glaze.plugins.preferences import PreferencesManifest
-from glaze.plugins.states import StateManifest
-from glaze.testing.util import handle_dialog
+from gild.plugins.lifecycle import LifecycleManifest
+from gild.plugins.log import LogManifest
+from gild.plugins.log.tools import GuiHandler, LogModel, StreamToLogRedirector
+from gild.plugins.preferences import PreferencesManifest
+from gild.plugins.states import StateManifest
+from gild.testing.util import handle_dialog
 
 with enaml.imports():
     from enaml.workbench.core.core_manifest import CoreManifest
 
 
-PLUGIN_ID = "glaze.logging"
+PLUGIN_ID = "gild.logging"
 
 
 class CMDArgs(object):
@@ -53,7 +53,7 @@ def test_handler1(workbench, logger):
     core = workbench.get_plugin("enaml.workbench.core")
     handler = GuiHandler(model=LogModel())
     core.invoke_command(
-        "glaze.logging.add_handler",
+        "gild.logging.add_handler",
         {"id": "ui", "handler": handler, "logger": "test"},
         None,
     )
@@ -63,7 +63,7 @@ def test_handler1(workbench, logger):
     assert handler in logger.handlers
     assert log_plugin._handlers == {"ui": (handler, "test")}
 
-    core.invoke_command("glaze.logging.remove_handler", {"id": "ui"}, None)
+    core.invoke_command("gild.logging.remove_handler", {"id": "ui"}, None)
 
     assert log_plugin.handler_ids == []
     assert handler not in logger.handlers
@@ -75,7 +75,7 @@ def test_filter1(workbench, logger):
     core = workbench.get_plugin("enaml.workbench.core")
     handler = GuiHandler(model=LogModel())
     core.invoke_command(
-        "glaze.logging.add_handler",
+        "gild.logging.add_handler",
         {"id": "ui", "handler": handler, "logger": "test"},
         None,
     )
@@ -87,7 +87,7 @@ def test_filter1(workbench, logger):
     test_filter = Filter()
 
     core.invoke_command(
-        "glaze.logging.add_filter",
+        "gild.logging.add_filter",
         {"id": "filter", "filter": test_filter, "handler_id": "ui"},
         None,
     )
@@ -97,7 +97,7 @@ def test_filter1(workbench, logger):
     assert log_plugin.filter_ids == ["filter"]
     assert log_plugin._filters == {"filter": (test_filter, "ui")}
 
-    core.invoke_command("glaze.logging.remove_filter", {"id": "filter"}, None)
+    core.invoke_command("gild.logging.remove_filter", {"id": "filter"}, None)
 
     assert log_plugin.filter_ids == []
     assert log_plugin._filters == {}
@@ -108,7 +108,7 @@ def test_filter2(workbench):
     core = workbench.get_plugin("enaml.workbench.core")
     handler = GuiHandler(model=LogModel())
     core.invoke_command(
-        "glaze.logging.add_handler",
+        "gild.logging.add_handler",
         {"id": "ui", "handler": handler, "logger": "test"},
         None,
     )
@@ -120,7 +120,7 @@ def test_filter2(workbench):
     test_filter = Filter()
 
     core.invoke_command(
-        "glaze.logging.add_filter",
+        "gild.logging.add_filter",
         {"id": "filter", "filter": test_filter, "handler_id": "ui"},
         None,
     )
@@ -130,7 +130,7 @@ def test_filter2(workbench):
     assert log_plugin.filter_ids == ["filter"]
     assert log_plugin._filters == {"filter": (test_filter, "ui")}
 
-    core.invoke_command("glaze.logging.remove_handler", {"id": "ui"}, None)
+    core.invoke_command("gild.logging.remove_handler", {"id": "ui"}, None)
 
     assert log_plugin.filter_ids == []
     assert log_plugin._filters == {}
@@ -141,7 +141,7 @@ def test_filter3(workbench, logger):
     core = workbench.get_plugin("enaml.workbench.core")
 
     core.invoke_command(
-        "glaze.logging.add_filter",
+        "gild.logging.add_filter",
         {"id": "filter", "filter": object(), "handler_id": "ui"},
         None,
     )
@@ -156,26 +156,26 @@ def test_filter4(workbench, logger):
             return True
 
     core.invoke_command(
-        "glaze.logging.add_filter",
+        "gild.logging.add_filter",
         {"id": "filter", "filter": Filter(), "handler_id": "ui"},
         None,
     )
 
 
-def test_formatter(workbench, logger, glaze_qtbot):
+def test_formatter(workbench, logger, gild_qtbot):
     """Test setting the formatter of a handler."""
     core = workbench.get_plugin("enaml.workbench.core")
     model = LogModel()
     handler = GuiHandler(model=model)
     core.invoke_command(
-        "glaze.logging.add_handler",
+        "gild.logging.add_handler",
         {"id": "ui", "handler": handler, "logger": "test"},
         None,
     )
 
     formatter = logging.Formatter("test : %(message)s")
     core.invoke_command(
-        "glaze.logging.set_formatter",
+        "gild.logging.set_formatter",
         {"formatter": formatter, "handler_id": "ui"},
         None,
     )
@@ -185,21 +185,21 @@ def test_formatter(workbench, logger, glaze_qtbot):
     def assert_text():
         assert model.text == "test : test\n"
 
-    glaze_qtbot.wait_until(assert_text)
+    gild_qtbot.wait_until(assert_text)
 
 
-def test_formatter2(workbench, logger, glaze_qtbot):
+def test_formatter2(workbench, logger, gild_qtbot):
     """Test setting the formatter of a non existing handler."""
     core = workbench.get_plugin("enaml.workbench.core")
 
     formatter = logging.Formatter("test : %(message)s")
     core.invoke_command(
-        "glaze.logging.set_formatter",
+        "gild.logging.set_formatter",
         {"formatter": formatter, "handler_id": "non-existing"},
         None,
     )
 
-    glaze_qtbot.wait(10)
+    gild_qtbot.wait(10)
 
 
 def test_start_logging1(workbench):
@@ -208,15 +208,15 @@ def test_start_logging1(workbench):
     cmd_args.nocapture = False
     old = sys.stdout
 
-    app = workbench.get_plugin("glaze.lifecycle")
+    app = workbench.get_plugin("gild.lifecycle")
     app.run_app_startup(cmd_args)
     plugin = workbench.get_plugin(PLUGIN_ID)
-    app_dir = workbench.get_plugin("glaze.preferences").app_directory
+    app_dir = workbench.get_plugin("gild.preferences").app_directory
 
     try:
         assert os.path.isdir(os.path.join(app_dir, "logs"))
-        assert "glaze.file_log" in plugin.handler_ids
-        assert "glaze.gui_log" in plugin.handler_ids
+        assert "gild.file_log" in plugin.handler_ids
+        assert "gild.gui_log" in plugin.handler_ids
         assert plugin.gui_model
         assert isinstance(sys.stdout, StreamToLogRedirector)
         assert isinstance(sys.stderr, StreamToLogRedirector)
@@ -230,15 +230,15 @@ def test_start_logging2(workbench):
     cmd_args.nocapture = True
     old = sys.stdout
 
-    app = workbench.get_plugin("glaze.lifecycle")
+    app = workbench.get_plugin("gild.lifecycle")
     app.run_app_startup(cmd_args)
     plugin = workbench.get_plugin(PLUGIN_ID)
-    app_dir = workbench.get_plugin("glaze.preferences").app_directory
+    app_dir = workbench.get_plugin("gild.preferences").app_directory
 
     try:
         assert os.path.isdir(os.path.join(app_dir, "logs"))
-        assert "glaze.file_log" in plugin.handler_ids
-        assert "glaze.gui_log" in plugin.handler_ids
+        assert "gild.file_log" in plugin.handler_ids
+        assert "gild.gui_log" in plugin.handler_ids
         assert plugin.gui_model
         # Fail in no capture mode (unknown reason).
         assert not isinstance(sys.stdout, StreamToLogRedirector)
@@ -247,14 +247,14 @@ def test_start_logging2(workbench):
         sys.stdout = old
 
 
-def test_display_current_log(workbench, glaze_qtbot):
+def test_display_current_log(workbench, gild_qtbot):
     """Test the log display window"""
     cmd_args = CMDArgs()
     cmd_args.nocapture = True
 
-    app = workbench.get_plugin("glaze.lifecycle")
+    app = workbench.get_plugin("gild.lifecycle")
     app.run_app_startup(cmd_args)
 
     core = workbench.get_plugin("enaml.workbench.core")
-    with handle_dialog(glaze_qtbot):
-        core.invoke_command("glaze.logging.display_current_log", {}, None)
+    with handle_dialog(gild_qtbot):
+        core.invoke_command("gild.logging.display_current_log", {}, None)
