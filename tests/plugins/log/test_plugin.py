@@ -224,37 +224,37 @@ def test_formatter2(workbench, logger, gild_qtbot):
 #         sys.stdout = old
 
 
-# def test_start_logging2(workbench):
-#     """Test startup function when redirection of sys.stdout is not required"""
-#     cmd_args = CMDArgs()
-#     cmd_args.nocapture = True
-#     old = sys.stdout
+def test_start_logging2(workbench):
+    """Test startup function when redirection of sys.stdout is not required"""
+    cmd_args = CMDArgs()
+    cmd_args.nocapture = True
+    old = sys.stdout
 
-#     app = workbench.get_plugin("gild.lifecycle")
-#     app.run_app_startup(cmd_args)
-#     plugin = workbench.get_plugin(PLUGIN_ID)
-#     app_dir = workbench.get_plugin("gild.preferences").app_directory
+    app = workbench.get_plugin("gild.lifecycle")
+    app.run_app_startup(cmd_args)
+    plugin = workbench.get_plugin(PLUGIN_ID)
+    app_dir = workbench.get_plugin("gild.preferences").app_directory
 
-#     try:
-#         assert os.path.isdir(os.path.join(app_dir, "logs"))
-#         assert "gild.file_log" in plugin.handler_ids
-#         assert "gild.gui_log" in plugin.handler_ids
-#         assert plugin.gui_model
-#         # Fail in no capture mode (unknown reason).
-#         assert not isinstance(sys.stdout, StreamToLogRedirector)
-#         assert not isinstance(sys.stderr, StreamToLogRedirector)
-#     finally:
-#         sys.stdout = old
+    try:
+        assert os.path.isdir(os.path.join(app_dir, "logs"))
+        assert "gild.file_log" in plugin.handler_ids
+        assert "gild.gui_log" in plugin.handler_ids
+        assert plugin.gui_model
+        # Fail in no capture mode (unknown reason).
+        assert not isinstance(sys.stdout, StreamToLogRedirector)
+        assert not isinstance(sys.stderr, StreamToLogRedirector)
+    finally:
+        sys.stdout = old
 
 
-# def test_display_current_log(workbench, gild_qtbot):
-#     """Test the log display window"""
-#     cmd_args = CMDArgs()
-#     cmd_args.nocapture = False
+def test_display_current_log(workbench, gild_qtbot):
+    """Test the log display window"""
+    cmd_args = CMDArgs()
+    cmd_args.nocapture = True
 
-#     app = workbench.get_plugin("gild.lifecycle")
-#     app.run_app_startup(cmd_args)
+    app = workbench.get_plugin("gild.lifecycle")
+    app.run_app_startup(cmd_args)
 
-#     core = workbench.get_plugin("enaml.workbench.core")
-#     with handle_dialog(gild_qtbot):
-#         core.invoke_command("gild.logging.display_current_log", {}, None)
+    core = workbench.get_plugin("enaml.workbench.core")
+    with handle_dialog(gild_qtbot):
+        core.invoke_command("gild.logging.display_current_log", {}, None)

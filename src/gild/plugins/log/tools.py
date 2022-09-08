@@ -219,6 +219,7 @@ class DayRotatingTimeHandler(TimedRotatingFileHandler):
     def __init__(self, filename: str, mode: str = "wb", **kwargs) -> None:
         self.mode = mode
         self.path = ""
+        self.encoding = "utf-8"
         super(DayRotatingTimeHandler, self).__init__(
             filename, when="MIDNIGHT", **kwargs
         )
