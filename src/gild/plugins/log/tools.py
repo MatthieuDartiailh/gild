@@ -31,11 +31,10 @@ import queue
 import time
 from logging.handlers import TimedRotatingFileHandler
 from threading import Thread
-from typing import IO, Union
+from typing import IO, Union, Literal
 
 from atom.api import Atom, Int, Str
 from enaml.application import deferred_call
-from typing_extensions import Literal
 
 
 class StreamToLogRedirector(object):

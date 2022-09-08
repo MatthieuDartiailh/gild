@@ -22,7 +22,6 @@ dependencies = [
     "qtawesome",
     "watchdog",
     "rtoml",
-    "typing_extensions; python_version<'3.10'"
 ]
 dynamic=["version"]
 
