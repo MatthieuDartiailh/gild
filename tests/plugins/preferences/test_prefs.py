@@ -255,9 +255,7 @@ def test_save3(pref_workbench, app_dir, monkeypatch):
         from gild.plugins.preferences.manifest import FileDialogEx
     monkeypatch.setattr(FileDialogEx, "get_save_file_name", answer)
     core = pref_workbench.get_plugin("enaml.workbench.core")
-    core.invoke_command(
-        "gild.preferences.save", {"path": prefs_path, "ask_user": True}
-    )
+    core.invoke_command("gild.preferences.save", {"path": prefs_path, "ask_user": True})
 
     ref = {c_man.id: {"string": "test_save", "auto": ""}}
     assert os.path.isfile(path)
