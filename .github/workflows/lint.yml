@@ -37,7 +37,7 @@ jobs:
         if: always()
         run: |
           flake8 src;
-      - name: Mypy
-        if: always()
-        run: |
-          mypy src;
+      # - name: Mypy
+      #   if: always()
+      #   run: |
+      #     mypy src;
