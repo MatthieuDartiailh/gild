@@ -31,7 +31,7 @@ import queue
 import time
 from logging.handlers import TimedRotatingFileHandler
 from threading import Thread
-from typing import IO, Union, Literal
+from typing import IO, Literal, Union
 
 from atom.api import Atom, Int, Str
 from enaml.application import deferred_call
