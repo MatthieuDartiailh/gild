@@ -7,8 +7,9 @@
 # --------------------------------------------------------------------------------------
 """Gild is a set of utility to help build plugin application using Enaml.
 """
+# This is simply to provide a meaningful error in case the dependency is missing
 try:
-    import qtpy
+    import qtpy  # noqa
 except ImportError:
     raise RuntimeError(
         "Currently Gild requires a qt backend to be installed. Since installation do "
