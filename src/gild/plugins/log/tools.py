@@ -243,7 +243,7 @@ class DayRotatingTimeHandler(TimedRotatingFileHandler):
         path = os.path.join(base_dir, filename % i)
         self.path = path
 
-        if self.encoding is None:
+        if self.encoding is None or self.encoding == "locale":
             stream = open(path, self.mode)
         else:
             stream = codecs.open(path, self.mode, self.encoding)

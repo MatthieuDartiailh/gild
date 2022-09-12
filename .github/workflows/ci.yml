@@ -42,7 +42,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade --upgrade-strategy eager pip wheel
-      - name: Install project and testing dependencies with [user]
+      - name: Install project and testing dependencies
         # Use installed version when moving to a source directory structure
         run: |
           pip install --upgrade --upgrade-strategy eager .[qt${{ matrix.qt-version }}-${{ matrix.qt-binding }}] -r test_requirements.txt
