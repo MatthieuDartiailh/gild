@@ -1,5 +1,5 @@
 # --------------------------------------------------------------------------------------
-# Copyright 2020 by Gild Authors, see git history for more details.
+# Copyright 2020-2023 by Gild Authors, see git history for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -8,11 +8,11 @@
 """Plugin handling the collection and registering of extension packages.
 
 """
+import importlib.metadata
 import logging
 from traceback import format_exc
 from typing import MutableMapping, Union
 
-import pkg_resources
 from atom.api import Dict, List
 from enaml.workbench.api import Plugin, PluginManifest
 
@@ -47,11 +47,16 @@ class PackagesPlugin(Plugin):
         packages: MutableMapping[str, Union[str, MutableMapping[str, str]]] = dict()
         registered: List[PluginManifest] = []
         core.invoke_command("gild.errors.enter_error_gathering", {})
-        for ep in pkg_resources.iter_entry_points(self.manifest.extension_point):
+        # Importlib can duplicate entry points in some cases (editable install)
+        # so we remove the duplicates.
+        entry_points = set(
+            importlib.metadata.entry_points()[self.manifest.extension_point]
+        )
+        for ep in entry_points:
 
-            # Check that all dependencies are satisfied.
+            # Attempt to load the entry point.
             try:
-                ep.require()
+                factory = ep.load()
             except Exception:
                 msg = "Could not load extension package %s : %s"
                 msg = msg % (ep.name, format_exc())
@@ -60,7 +65,15 @@ class PackagesPlugin(Plugin):
                 continue
 
             # Get all manifests
-            manifests = ep.load()()
+            try:
+                manifests = factory()
+            except Exception:
+                msg = "Could not obtain extension manifests for extension %s : %s"
+                msg = msg % (ep.name, format_exc())
+                packages[ep.name] = msg
+                core.invoke_command(cmd, dict(kind="package", id=ep.name, message=msg))
+                continue
+
             if not isinstance(manifests, list):
                 msg = "Package %s entry point must return a list, not %s"
                 msg = msg % (ep.name, str(type(manifests)))

@@ -40,9 +40,9 @@ def pack_workbench(workbench):
 
 def patch_pkg(monkey, answer):
     """Patch the pkg_resources.iter_entry_points function."""
-    from gild.plugins.packages.plugin import pkg_resources
+    from gild.plugins.packages.plugin import importlib
 
-    monkey.setattr(pkg_resources, "iter_entry_points", lambda x: answer)
+    monkey.setattr(importlib.metadata, "entry_points", lambda x: answer)
 
 
 class FalseEntryPoint(Atom):
