@@ -34,7 +34,7 @@ def pack_workbench(workbench):
     workbench.register(CoreManifest())
     workbench.register(LifecycleManifest())
     workbench.register(ErrorsManifest())
-    workbench.register(PackagesManifest())
+    workbench.register(PackagesManifest(extension_point="test"))
     return workbench
 
 
@@ -42,7 +42,7 @@ def patch_pkg(monkey, answer):
     """Patch the pkg_resources.iter_entry_points function."""
     from gild.plugins.packages.plugin import importlib
 
-    monkey.setattr(importlib.metadata, "entry_points", lambda x: answer)
+    monkey.setattr(importlib.metadata, "entry_points", lambda: {"test": answer})
 
 
 class FalseEntryPoint(Atom):
@@ -57,12 +57,9 @@ class FalseEntryPoint(Atom):
     #: List of manifest to return when load method is called.
     manifests = Value()
 
-    def require(self):
+    def load(self):
         if self.missing_require:
             raise Exception()
-        return True
-
-    def load(self):
         return lambda: self.manifests
 
 
