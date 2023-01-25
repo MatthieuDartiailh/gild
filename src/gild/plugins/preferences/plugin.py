@@ -25,6 +25,15 @@ from .preferences import Preferences
 PREFS_POINT = "gild.preferences.plugin"
 
 
+def dictsubtype_as_dict(adict: dict) -> dict:
+    out = {}
+    for k, v in adict.items():
+        if isinstance(v, dict):
+            v = dictsubtype_as_dict(v)
+        out[k] = v
+    return out
+
+
 class PrefPlugin(Plugin):
     """Plugin responsible for managing the application preferences."""
 
@@ -94,7 +103,7 @@ class PrefPlugin(Plugin):
 
         self._last_saved_pref_file = str(path)
         with open(path, "w", encoding="utf-8") as f:
-            toml.dump(prefs, f, pretty=True)
+            toml.dump(dictsubtype_as_dict(prefs), f, pretty=True)
 
     def load_preferences(self, path: Optional[str] = None) -> None:
         """Load preferences and update all registered plugin.
@@ -207,4 +216,4 @@ class PrefPlugin(Plugin):
             self._prefs[plugin_id] = {name: value}
 
         with open(self._last_saved_pref_file, "w") as f:
-            toml.dump(self._prefs, f, pretty=True)
+            toml.dump(dictsubtype_as_dict(self._prefs), f, pretty=True)
